@@ -28,7 +28,7 @@ coverage
 *.sw?
 
 *.tsbuildinfo
-engine/typed-router.d.ts
+typed-router.d.ts
 
 **/images/source_files/**
 **/videos/source_files/**

@@ -47,6 +47,7 @@ const props = defineProps<{
   followPitch?: number
   followZoom?: number
   satellite?: MapOverlays
+  noPreScroll?: boolean
 }>()
 
 const fPitch = props.followPitch ?? 60
@@ -100,7 +101,7 @@ function generateFrame(time: number) {
   const map = getMap()
   if (!map) return
   //animate from the fit bounds frame down to the start of the follow camera section
-  if (preScrollProgress.value > 0 && preScrollProgress.value < 1) {
+  if (preScrollProgress.value > 0 && preScrollProgress.value < 1 && !props.noPreScroll) {
     doPreScrollAnimation()
   }
   let perc = scrollProgress.value

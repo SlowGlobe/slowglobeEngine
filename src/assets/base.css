@@ -1,0 +1,109 @@
+:root {
+  --background-color: #f9f8f2;
+  --header-background-color: rgb(234, 233, 226);
+  --text-heading-color: rgb(51, 51, 50);
+  --primary: #721817;
+  --secondary: #285943;
+  --tertiary: #aa8c53;
+  --md-sys-color-surface: #fff8f7;
+  --md-sys-color-on-surface: rgb(35 25 24);
+  --article-background-color: #e7e7e1;
+}
+
+html {
+  --polaroid-width: max(300px, 15vw);
+  --portrait-width: 900px;
+  /* body won't work ¯\_(ツ)_/¯ */
+  /* scroll-snap-type: y mandatory; */
+  overflow-y: scroll;
+  overflow-x: clip;
+  margin: 0;
+  padding: 0;
+  /* scroll-padding: calc((100vh - 4rem) / 2 - 1px); */
+  @media (width <= 900px) {
+    /* scroll-padding: calc((100vh - (var(--polaroid-width) * 1.362 / 2)) - 4em - 1px); */
+    scroll-padding-bottom: calc((100vw - (var(--polaroid-width) * 1.12)) / 2);
+    @supports (-webkit-touch-callout: none) {
+      scroll-padding-bottom: none;
+    }
+  }
+  --scrollbarBG: rgb(255 218 214);
+  --thumbBG: rgb(119 86 83);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-heading-color);
+  font-family: 'Libre Caslon Text', serif;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: 'Libre Caslon Text', serif;
+  color: var(--primary);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: 4em;
+  margin-top: 0.2em;
+  margin-bottom: 0em;
+  letter-spacing: -0.02em;
+  line-height: 1.05em;
+  z-index: 2;
+}
+
+aside {
+  background-color: rgba(255, 218, 214, 0.4);
+  color: rgb(59 9 8);
+  border-right: 1em solid rgb(255 218 214);
+  /* font-style: italic; */
+  text-align: right;
+  padding: 1em;
+  padding-right: 3em;
+  z-index: 10;
+  position: relative;
+  margin-left: -3em;
+  padding-left: 4em;
+  @media (width <= 900px) {
+    margin-right: -1.8em;
+    padding-left: 3em;
+  }
+  text-align: justify;
+}
+
+aside::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -2.5em;
+  width: 3em;
+  height: 3em;
+  background-color: rgb(255 218 214);
+  background-color: var(--md-sys-color-surface);
+  border-radius: 50%;
+}
+
+aside::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 1.5em;
+  height: 100%;
+  border-left: 0.25em dashed var(--md-sys-color-surface);
+  border-left: 0.25em dashed rgb(255 218 214);
+}
+
+.mapboxgl-ctrl {
+  .mapboxgl-ctrl-logo {
+    display: none !important;
+  }
+}
+.mapboxgl-ctrl-attrib-button {
+  opacity: 0.5;
+}

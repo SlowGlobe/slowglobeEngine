@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="15"
+   viewBox="0 0 15 15"
+   width="15"
+   id="triangle"
+   version="1.1"
+   sodipodi:docname="locArrow.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:export-filename="locArrow.png"
+   inkscape:export-xdpi="243.2"
+   inkscape:export-ydpi="243.2"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="32"
+     inkscape:cx="20.859375"
+     inkscape:cy="5.359375"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="triangle" />
+  <path
+     d="m 7.5371807,0.48286689 c -0.2846983,0 -0.4715676,0.17112795 -0.5943123,0.37142105 L 1.2969978,13.439053 c -0.078037,0.225161 -0.074265,0.222794 -0.074265,0.37142 0,0.520048 0.4112325,0.817156 0.6685771,0.668577 2.5065257,-1.447143 3.8584321,-2.478835 5.6086898,-2.453176 1.7502578,0.02566 3.1019531,1.005911 5.6086901,2.453176 0.321658,0.185711 0.668577,-0.148529 0.668577,-0.668577 0,-0.148529 0,-0.147443 -0.07427,-0.37142 L 8.1313964,0.85428794 C 8.0099071,0.65331883 7.7783243,0.48286689 7.5371807,0.48286689 Z"
+     id="path1"
+     sodipodi:nodetypes="sccsszssccs"
+     style="fill:#aa8c53;fill-opacity:1;stroke:#fff8f7;stroke-width:0.965734;stroke-opacity:1" />
+</svg>

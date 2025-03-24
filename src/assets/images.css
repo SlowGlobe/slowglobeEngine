@@ -1,0 +1,31 @@
+.photoMarker {
+  width: 6em;
+  aspect-ratio: 1 / 1;
+  background-position: 50% 50%;
+  background-size: cover;
+  padding: 0.5em;
+  translate: 0em -4em;
+  background-color: white;
+  border-radius: 0.25em;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.2);
+
+  img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: 50% 50%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.photoMarker::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}

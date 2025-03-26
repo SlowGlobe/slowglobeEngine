@@ -46,6 +46,7 @@ const props = defineProps<{
   showTime?: boolean
   followPitch?: number
   followZoom?: number
+  lockBearing?: number
   satellite?: MapOverlays
   noPreScroll?: boolean
 }>()
@@ -101,7 +102,7 @@ function generateFrame(time: number) {
   const map = getMap()
   if (!map) return
   //animate from the fit bounds frame down to the start of the follow camera section
-  if (preScrollProgress.value > 0 && preScrollProgress.value < 1 && !props.noPreScroll) {
+  if (preScrollProgress.value > 0 && preScrollProgress.value < 1) {
     doPreScrollAnimation()
   }
   let perc = scrollProgress.value
@@ -123,6 +124,7 @@ function generateFrame(time: number) {
   if (results.progressTime) currentTime.value = results.progressTime
   if (results.camPos) cameraPos = { lat: results.camPos[1], lng: results.camPos[0] }
   if (results.camBearing) camBearing = results.camBearing
+  if (typeof props.lockBearing === 'number') camBearing = props.lockBearing
   const source = map.getSource(randomId + 'Follow') as GeoJSONSource
   if (source) {
     // Could use line-progress here instead, see https://docs.mapbox.com/mapbox-gl-js/example/query-terrain-elevation/
@@ -234,6 +236,7 @@ function getProgress(perc: number, end?: number, start?: number) {
   return ((end ?? 0) - (start ?? 0)) * perc + (start ?? 0)
 }
 
+let lastEaseTime = 0
 function doPreScrollAnimation() {
   const map = getMap()
   if (!map) return
@@ -255,11 +258,11 @@ function doPreScrollAnimation() {
       perScrollFinalCameraPosition = {
         lat: result.camPos[1],
         lng: result.camPos[0],
-        bearing: result.camBearing
+        bearing: typeof props.lockBearing === 'number' ? props.lockBearing : result.camBearing
       }
   }
   if (perScrollFinalCameraPosition == null) return
-  const perc = preScrollProgress.value
+  const perc = props.noPreScroll ? 1 : preScrollProgress.value
 
   const easedPitch = getProgress(perc, fPitch, initialCameraPosition.pitch)
   const easedZoom = getProgress(perc, fZoom, initialCameraPosition.zoom)
@@ -271,17 +274,29 @@ function doPreScrollAnimation() {
   const easedLat = getProgress(perc, perScrollFinalCameraPosition.lat, intCamCent.lat)
   const easedLng = getProgress(perc, perScrollFinalCameraPosition.lng, intCamCent.lng)
 
-  map.jumpTo({
-    center: { lat: easedLat, lng: easedLng },
-    pitch: easedPitch,
-    zoom: easedZoom,
-    bearing: easedBearing
-  })
+  if (props.noPreScroll) {
+    const now = Date.now()
+    if (now - lastEaseTime < 1000) return
+    lastEaseTime = now
+    map.easeTo({
+      center: { lat: easedLat, lng: easedLng },
+      pitch: easedPitch,
+      zoom: easedZoom,
+      bearing: easedBearing,
+      maxDuration: 900
+    })
+  } else
+    map.jumpTo({
+      center: { lat: easedLat, lng: easedLng },
+      pitch: easedPitch,
+      zoom: easedZoom,
+      bearing: easedBearing
+    })
 }
 
 function onTopBoundsFrame([{ isIntersecting }]: IntersectionObserverEntry[]) {
   if (isIntersecting) {
-    fitBounds(fullGeometry, undefined, props.overviewPitch ?? 0)
+    fitBounds(fullGeometry, undefined, props.overviewPitch ?? 0, 500)
     const map = getMap()
     if (!map) return
     const bounds = bbox(fullGeometry)

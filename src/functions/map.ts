@@ -2,7 +2,11 @@ import { getTripById, getTripDetailsById } from './trips'
 import { bbox, featureCollection, featureEach, point } from '@turf/turf'
 import { useWindowSize } from '@vueuse/core'
 import type { Feature, FeatureCollection } from 'geojson'
-import mapboxgl, { GeoJSONSource, type RasterLayerSpecification } from 'mapbox-gl'
+import mapboxgl, {
+  GeoJSONSource,
+  type EasingOptions,
+  type RasterLayerSpecification
+} from 'mapbox-gl'
 import { onMounted, onUnmounted, readonly, ref } from 'vue'
 import { addLayersAndSources } from './mapLayers'
 
@@ -247,12 +251,16 @@ export function fitBounds(
     top: 20,
     bottom: 20
   },
-  pitch: number = 0
+  pitch: number = 0,
+  duration?: number
 ) {
   if (!map) return
   const bounds = bbox(geography)
   if (!bounds || bounds.length != 4) return
-  map.fitBounds(bounds, { padding, pitch, speed: 1 })
+  const options: EasingOptions = { padding, pitch }
+  if (duration) options.duration = duration
+  else options.speed = 1
+  map.fitBounds(bounds, options)
 }
 
 export function showOverviews(value: boolean) {

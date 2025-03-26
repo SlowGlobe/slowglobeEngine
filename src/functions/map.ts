@@ -3,7 +3,7 @@ import { bbox, featureCollection, featureEach, point } from '@turf/turf'
 import { useWindowSize } from '@vueuse/core'
 import type { Feature, FeatureCollection } from 'geojson'
 import mapboxgl, { GeoJSONSource, type RasterLayerSpecification } from 'mapbox-gl'
-import { onMounted, readonly, ref } from 'vue'
+import { onMounted, onUnmounted, readonly, ref } from 'vue'
 import { addLayersAndSources } from './mapLayers'
 
 let map: null | mapboxgl.Map = null
@@ -16,7 +16,6 @@ const { width, height } = useWindowSize()
 
 export function useMap() {
   onMounted(() => {
-    // console.log('map mounted')
     mapboxgl.accessToken =
       'pk.eyJ1IjoiZGxiczAiLCJhIjoiY20wdGlpMmc2MHJqaDJsczVtNXRvN2ZneCJ9.47aVkXUGN8JNldnZUjj-nA'
     map = new mapboxgl.Map({
@@ -49,6 +48,11 @@ export function useMap() {
     map.on('moveend', () => {
       if (mapShouldSpin.value) spinGlobe()
     })
+  })
+  onUnmounted(() => {
+    map?.remove()
+    map = null
+    console.log(map)
   })
   return { interactive: readonly(mapInteractive) }
 }
@@ -168,6 +172,7 @@ export async function showTracks(id: string, sequence?: Reveal) {
   if (!trip) return
 
   const tracksSource = map.getSource('detail-tracks') as GeoJSONSource
+  if (typeof tracksSource == 'undefined') setTimeout(() => showTracks(id, sequence), 100)
 
   // Handle showing only portions of the full detailled tracks, in a few different formats
   if (typeof sequence !== 'undefined' && Array.isArray(trip.features) && trip.features.length > 0) {

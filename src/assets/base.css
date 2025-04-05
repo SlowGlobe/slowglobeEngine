@@ -55,6 +55,12 @@ h1 {
   letter-spacing: -0.02em;
   line-height: 1.05em;
   z-index: 2;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  overflow: hidden;
+  @media (width <= 500px) {
+    font-size: 3.4em;
+  }
 }
 
 aside {

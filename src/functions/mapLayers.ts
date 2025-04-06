@@ -9,7 +9,6 @@ export async function addLayersAndSources() {
 
   const images: [string, string, boolean?][] = [
     ['diamond', 'diamond.png'],
-    ['pattern-dot', 'dot.png'],
     ['loc-arrow', 'locArrow.png'],
     ['campsite', 'campsite.png'],
     ['target', 'target.png'],
@@ -50,20 +49,18 @@ export async function addLayersAndSources() {
   map.addSource('detail-tracks', {
     type: 'geojson',
     lineMetrics: true,
-
     data: featureCollection([])
   })
-
-  const lineBaseWidth = 6
+  const lineBaseWidth = 4
   map.addLayer({
     id: 'detail-tracks-walk',
     type: 'line',
     source: 'detail-tracks',
-    layout: { 'line-join': 'none' },
+    layout: { 'line-join': 'round', 'line-cap': 'round' },
     paint: {
-      // 'line-width': 10,
+      // 'line-width': 6,
       'line-occlusion-opacity': 0.5,
-      'line-pattern': 'pattern-dot',
+      'line-dasharray': [0, 2],
       'line-color': 'rgb(110, 25, 25)',
       'line-width': [
         'interpolate',
@@ -165,6 +162,7 @@ export async function addLayersAndSources() {
       ['case', ['has', 'overview'], ['==', true, ['get', 'overview']], true]
     ]
   })
+
   map.addLayer({
     id: 'detail-tracks-drive',
     type: 'line',

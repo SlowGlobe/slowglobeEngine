@@ -5,7 +5,40 @@ declare module '*?gallery' {
   }[]
   export default images
 }
+
 declare module '*.jpg?gallery' {
+  const images: {
+    width: string
+    src: string
+  }[]
+  export default images
+}
+
+declare module '*.JPG?gallery' {
+  const images: {
+    width: string
+    src: string
+  }[]
+  export default images
+}
+
+declare module '*.jpeg?gallery' {
+  const images: {
+    width: string
+    src: string
+  }[]
+  export default images
+}
+
+declare module '*.png?gallery' {
+  const images: {
+    width: string
+    src: string
+  }[]
+  export default images
+}
+
+declare module '*.PNG?gallery' {
   const images: {
     width: string
     src: string

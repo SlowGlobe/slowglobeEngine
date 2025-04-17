@@ -81,6 +81,7 @@ interface Img {
 const props = defineProps<{
   list: Array<string | Img>
   addPhotosToMap?: boolean
+  smallThumbnails?: boolean
 }>()
 
 const plugins = [lgThumbnail, lgZoom, lgVideo]
@@ -226,7 +227,10 @@ onUnmounted(removeAllMarkers)
   gap: 1em;
   flex-wrap: wrap;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(v-bind('smallThumbnails ?  "150px":"200px"'), 1fr)
+  );
 }
 
 .gallery-item,

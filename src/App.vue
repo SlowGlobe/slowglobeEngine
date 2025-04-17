@@ -23,11 +23,11 @@ provide(tripIdSymbol, tripId)
   <main>
     <div class="map" id="backmap"></div>
     <router-view v-slot="{ Component, route }">
-      <Transition :name="transitionName" mode="out-in">
-        <div :key="route.name">
-          <component :is="Component" :key="route.path"></component>
-        </div>
-      </Transition>
+      <!-- <Transition :name="transitionName" mode="out-in"> -->
+      <div :key="route.name">
+        <component :is="Component" :key="route.path"></component>
+      </div>
+      <!-- </Transition> -->
     </router-view>
   </main>
   <component :is="'style'" type="text/css">

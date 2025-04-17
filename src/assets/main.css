@@ -1,2 +1,68 @@
 @import './base.css';
 @import './images.css';
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(30px);
+  }
+}
+
+@keyframes slide-to-left {
+  to {
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(40vh);
+  }
+}
+@keyframes slide-down {
+  to {
+    transform: translateY(-40vh);
+  }
+}
+/* ::view-transition(docs) {
+  animation-duration: 5s;
+} */
+
+::view-transition-old(polaroid-stamp),
+::view-transition-new(polaroid-stamp) {
+  animation-duration: 0.3s;
+}
+
+/* ::view-transition-old(docs) {
+  animation:
+    190ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    1300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-down;
+}
+
+::view-transition-new(docs) {
+  animation:
+    1210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    1300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-up;
+} */
+
+/* html::view-transition-group(.titles) {
+  animation:
+    1190ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    1300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+} */
+
+:root {
+  view-transition-name: none;
+  /* animation-duration: 2s; */
+}

@@ -2,7 +2,7 @@
   <div class="pswp"></div>
   <div class="topTrigger" v-intersection-observer="onIntersectionObserver"></div>
 
-  <div class="cont2">
+  <div class="cont2" style="view-transition-name: docs">
     <slot></slot>
     <div class="footer"><PostageStamp :image="headerImage"></PostageStamp></div>
   </div>

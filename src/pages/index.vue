@@ -84,7 +84,7 @@ const intMarg = computed(() => {
     <div class="mapSpacer halfHeight"></div>
     <div class="mapSpacer halfHeight"></div>
     <div class="attributionContainer">
-      <AboutDetail />
+      <!-- <AboutDetail /> -->
     </div>
   </div>
 </template>

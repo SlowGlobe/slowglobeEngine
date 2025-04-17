@@ -178,16 +178,11 @@ onUnmounted(() => {
 <style scoped>
 .startSeg {
   height: 0em;
-  --mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50%/2.38em 100%;
-  -webkit-mask: var(--mask);
-  mask: var(--mask);
+  mask: var(--topCutoutMask);
 }
 .endSeg {
   height: 0em;
-  --mask: conic-gradient(from 130deg at top, #000000, #000000 1deg 99deg, #00000000 100deg)
-    50%/2.38em 100%;
-  -webkit-mask: var(--mask);
-  mask: var(--mask);
+  mask: var(--bottomCutoutMask);
 }
 .mapCutout {
   height: max(60vh, 300px);

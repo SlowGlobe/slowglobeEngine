@@ -32,6 +32,11 @@ html {
 
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+
+  --topCutoutMask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg)
+    50%/2.38em 100%;
+  --bottomCutoutMask: conic-gradient(from 130deg at top, #000, #000 1deg 99deg, #0000 100deg)
+    50%/2.38em 100%;
 }
 
 body {

@@ -10,7 +10,7 @@ const dirname = realpathSync('.')
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  assetsInclude: ['**/*.m4v', '**/*.geojson'],
+  assetsInclude: ['**/*.m4v', '**/*.geojson', '**/*.JPG'],
   resolve: {
     // extensions: ['.js', '.ts', '.vue', '.json', '.geojson'],
     alias: {
@@ -22,8 +22,8 @@ export default defineConfig({
   plugins: [
     imagetools({
       include: [
-        '**/*.{heif,avif,jpeg,jpg,png,tiff,webp,gif}?*',
-        '../trips/**/images/*.{heif,avif,jpeg,jpg,png,tiff,webp,gif}?*'
+        '**/*.{heif,avif,jpeg,jpg,JPG,png,PNG,tiff,webp,gif}?*',
+        '../trips/**/images/*.{heif,avif,jpeg,jpg,JPG,png,PNG,tiff,webp,gif}?*'
       ]
     }),
     geoJsonSimplify(),

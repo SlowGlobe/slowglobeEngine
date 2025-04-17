@@ -1,14 +1,23 @@
 import type { ImageModules } from './classes'
 
-export const allTripImages = import.meta.glob('~/**/images/*.jpg', {
-  query: {
-    w: '400;',
-    // h: '300;',
-    format: 'webp',
-    as: 'metadata'
-  }, // '?w=300&h=300&format=webp&as=metadata',
-  import: 'default'
-}) as ImageModules
+export const allTripImages = import.meta.glob(
+  [
+    '~/**/images/*.jpg',
+    '~/**/images/*.jpeg',
+    '~/**/images/*.JPG',
+    '~/**/images/*.png',
+    '~/**/images/*.PNG'
+  ],
+  {
+    query: {
+      w: '400;',
+      // h: '300;',
+      format: 'webp',
+      as: 'metadata'
+    }, // '?w=300&h=300&format=webp&as=metadata',
+    import: 'default'
+  }
+) as ImageModules
 
 export const fullPathLookup = Object.keys(allTripImages).reduce(
   (acc: Record<string, string>, curr) => {

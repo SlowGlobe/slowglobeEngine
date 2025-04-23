@@ -8,10 +8,15 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { DataLoaderPlugin } from 'unplugin-vue-router/data-loaders'
+import { configure } from 'vue-gtag'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(DataLoaderPlugin, { router })
+
+configure({
+  tagId: 'G-87M10Q6MH2'
+})
 
 app.mount('#app')

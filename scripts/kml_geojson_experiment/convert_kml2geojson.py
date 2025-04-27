@@ -38,7 +38,7 @@ def intersection_point(point1, point2):
     return (x1_out, lat_out, z1), (x2_out, lat_out, z2)
 
 
-def kml_to_geojson(kml_file):
+def kml_to_geojson(kml_file, order=1):
     """Convert KML to GeoJSON and handle antimeridian crossing geometries."""
 
     # Parse KML as GeoJSON
@@ -56,10 +56,11 @@ def kml_to_geojson(kml_file):
             gdf.at[index, "icon"] = "target"
         if row["geometry"].geom_type == "LineString":
             gdf.at[index, "type"] = "flight"
+            gdf.at[index, "order"] = order
 
-            test, split_idx = checkCrossing(row["geometry"].coords)
-            if test:
-                # Split the LineString into two separate LineStrings
+            crossesMeridian, split_idx = checkCrossing(row["geometry"].coords)
+            if crossesMeridian:
+                # Split the LineString into two
                 coordinates = list(row["geometry"].coords)
                 pre_meridian = coordinates[:split_idx]
                 post_meridian = coordinates[split_idx:]
@@ -74,6 +75,7 @@ def kml_to_geojson(kml_file):
                 gdf.at[index + 1, "geometry"] = LineString(post_meridian)
                 gdf.at[index + 1, "type"] = "flight"
                 gdf.at[index + 1, "name"] = gdf.at[index, "name"]
+                gdf.at[index + 1, "order"] = order
 
     return gdf
 
@@ -81,11 +83,14 @@ def kml_to_geojson(kml_file):
 if __name__ == "__main__":
     output_to_save = None
     directory = "./flight_data"
+    order = 1
     for idx, filename in enumerate(os.listdir(directory)):
-        output = kml_to_geojson(os.path.join(directory, filename))
+        output = kml_to_geojson(os.path.join(directory, filename), order)
         output_to_save = output if idx == 0 else pd.concat([output_to_save, output])
+        # Visual order of tracks in GeoJSON
+        order += 1
 
     # Remove duplicate points (repeat airports)
     output_to_save.drop_duplicates(inplace=True)
     # TODO: Figure out how to get rid of CRS warning/error
-    output_to_save.to_file("output_file.json", driver="GeoJSON", crs=output_to_save.crs)
+    output_to_save.to_file("geometry.geojson", driver="GeoJSON", crs=output_to_save.crs)

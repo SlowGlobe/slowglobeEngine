@@ -39,3 +39,5 @@ typed-router.d.ts
 logo/oldVersions
 
 scripts/kml_geojson_experiment/flight_data*
+scripts/kml_geojson_experiment/*.geojson
+*__pycache__

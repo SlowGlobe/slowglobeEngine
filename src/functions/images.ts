@@ -6,7 +6,8 @@ export const allTripImages = import.meta.glob(
     '~/**/images/*.jpeg',
     '~/**/images/*.JPG',
     '~/**/images/*.png',
-    '~/**/images/*.PNG'
+    '~/**/images/*.PNG',
+    '~/**/images/*.gif'
   ],
   {
     query: {

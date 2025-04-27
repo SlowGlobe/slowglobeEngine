@@ -21,10 +21,7 @@
 .wrap {
   z-index: 1;
   position: relative;
-  --mask: conic-gradient(from 130deg at top, #000000, #000000 1deg 99deg, #00000000 100deg)
-    50%/2.38em 100%;
-  -webkit-mask: var(--mask);
-  mask: var(--mask);
+  mask: var(--bottomCutoutMask);
   padding-top: 3em;
 }
 

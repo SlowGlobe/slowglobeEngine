@@ -60,8 +60,8 @@ provide(tripIdSymbol, tripId)
 .slide-leave-active,
 .up-enter-active {
   transition:
-    margin 0.7s ease-out,
-    opacity 0.7s ease-out;
+    margin 0.3s ease-out,
+    opacity 0.3s ease-out;
 }
 .slide-enter-active,
 .up-leave-active {
@@ -70,7 +70,7 @@ provide(tripIdSymbol, tripId)
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 1s ease;
+  transition: opacity 0.3s ease;
   opacity: 1;
   position: relative;
 }

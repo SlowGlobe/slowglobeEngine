@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, rename, stat } from 'fs'
 console.log('Converting all videos to .mp4')
 
 // scan the trips/**/videos/ folder for.mov files
-const videoFiles = await glob('../trips/**/videos/*.{MOV,mov,mp4}', {
+const videoFiles = await glob('../trips/**/videos/*.{MOV,mov,mp4,mkv}', {
   stat: true,
   withFileTypes: true,
   ignore: {

@@ -32,6 +32,11 @@ html {
 
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+
+  --topCutoutMask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg)
+    50%/2.38em 100%;
+  --bottomCutoutMask: conic-gradient(from 130deg at top, #000, #000 1deg 99deg, #0000 100deg)
+    50%/2.38em 100%;
 }
 
 body {
@@ -57,7 +62,7 @@ h1 {
   z-index: 2;
   text-overflow: ellipsis;
   word-break: break-word;
-  overflow: hidden;
+  /* overflow: hidden; */
   @media (width <= 500px) {
     font-size: 3.4em;
   }
@@ -67,7 +72,6 @@ aside {
   background-color: rgba(255, 218, 214, 0.4);
   color: rgb(59 9 8);
   border-right: 1em solid rgb(255 218 214);
-  /* font-style: italic; */
   text-align: right;
   padding: 1em;
   padding-right: 3em;
@@ -76,23 +80,12 @@ aside {
   margin-left: -3em;
   padding-left: 4em;
   @media (width <= 900px) {
+    margin-right: -0.5em;
     margin-right: -1.8em;
-    padding-left: 3em;
+    padding-left: 3.5em;
   }
   text-align: justify;
-}
-
-aside::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: -2.5em;
-  width: 3em;
-  height: 3em;
-  background-color: rgb(255 218 214);
-  background-color: var(--md-sys-color-surface);
-  border-radius: 50%;
+  mask-image: radial-gradient(circle at calc(100% - 0.2em) 50%, transparent 1.5em, black 1.5em);
 }
 
 aside::before {
@@ -101,7 +94,6 @@ aside::before {
   top: 0;
   right: 1.5em;
   height: 100%;
-  border-left: 0.25em dashed var(--md-sys-color-surface);
   border-left: 0.25em dashed rgb(255 218 214);
 }
 

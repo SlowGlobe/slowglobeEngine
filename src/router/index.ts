@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { useTripDetails } from '@/functions/loaders'
+import { getTripById } from '@/functions/trips'
 
 // Add a data loader to each of the trip routes to load the geojson
 const index = routes.findIndex((r) => r.path === '/trip')
@@ -22,6 +23,16 @@ const router = createRouter({
     })
   },
   routes
+})
+
+router.beforeEach((to, from) => {
+  const tripId = to.path.startsWith('/trip/') ? to.path.split('/')[2] : ''
+  const result = getTripById(tripId)
+  if (result && result.name) {
+    document.title = result.name
+    return
+  }
+  document.title = 'Slow Globe'
 })
 
 export default router

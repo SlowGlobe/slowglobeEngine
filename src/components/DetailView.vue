@@ -19,7 +19,6 @@
   color: var(--md-sys-color-on-surface);
 }
 .cont2 > * {
-  background-color: var(--article-background-color);
   background-color: var(--md-sys-color-surface);
   padding: 1em 2em;
   @media (width >= 500px) {
@@ -27,14 +26,15 @@
   }
 }
 .footer {
-  @media (width >= 900px) {
-    mask: var(--topCutoutMask);
-    margin-bottom: 4em;
-  }
   z-index: 2;
   position: relative;
   padding-bottom: 3em;
   text-align: center;
+
+  @media (width >= 900px) {
+    mask: var(--topCutoutMask);
+    margin-bottom: 4em;
+  }
 }
 </style>
 

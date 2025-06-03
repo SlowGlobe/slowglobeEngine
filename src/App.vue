@@ -96,7 +96,7 @@ header {
     padding-top: 1em;
     width: 4rem;
     transition: width 0.5s ease;
-    width: v-bind('shouldScrollSnap ?  "7rem":"4rem"');
+    width: v-bind('shouldScrollSnap ?  "min(7rem,25vw)":"4rem"');
     filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.4));
   }
 }

@@ -4,7 +4,10 @@
 
   <div class="cont2">
     <slot></slot>
-    <div class="footer"><PostageStamp :image="headerImage"></PostageStamp></div>
+    <div class="footer">
+      <!-- <PostageStamp :image="headerImage"></PostageStamp> <br /> -->
+      <SubscriptionBox :header-image="headerImage" />
+    </div>
   </div>
 </template>
 
@@ -54,6 +57,7 @@ import { inject, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { tripIdSymbol } from '@/functions/classes'
 import { getTripHeaderInfoById } from '@/functions/trips'
+import SubscriptionBox from './SubscriptionBox.vue'
 
 const props = defineProps<{
   reveal?: Reveal

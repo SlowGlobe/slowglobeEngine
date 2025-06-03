@@ -53,10 +53,15 @@ const intMarg = computed(() => {
   }
   return '-45% 0px -45% 0px'
 })
+
+function showNotification() {
+  window.alert('This is a notification!')
+}
 </script>
 
 <template>
   <!-- When scroll animation has better browser support, look at this https://scroll-driven-animations.style/demos/stacking-cards/css/ -->
+  <iconify-icon icon="mdi:bell" class="notifBell" inline @click="showNotification"></iconify-icon>
   <div class="polaroidGrid">
     <div
       class="mapSpacer"
@@ -103,6 +108,25 @@ const intMarg = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.notifBell {
+  position: fixed;
+  top: 16px;
+  right: 10px;
+  z-index: 0;
+  font-size: 2.2em;
+  color: var(--primary);
+  opacity: 0.6;
+  cursor: pointer;
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2));
+  @media (width <= 900px) {
+    z-index: 0;
+    top: unset;
+    right: unset;
+    bottom: 10px;
+    left: 10px;
+  }
 }
 
 .polaroidGrid {

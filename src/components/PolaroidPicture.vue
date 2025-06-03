@@ -26,7 +26,6 @@ defineProps({
 .container:nth-child(4n + 1) {
   transform: rotate(4deg) translateX(2em);
 }
-
 .container:nth-child(7n) {
   transform: rotate(11deg) translateX(1.6em);
 }
@@ -46,14 +45,14 @@ defineProps({
     color: inherit;
   }
   @media (width <= 900px) {
-    padding: 0px calc((100vw - (var(--polaroid-width) * 1.12)) / 2);
+    margin: 0px calc((100vw - (var(--polaroid-width) * 1.12)) / 2);
     transform: none !important;
     @supports (-webkit-touch-callout: none) {
-      padding-bottom: calc((100vw - (var(--polaroid-width) * 1.12)) / 2);
+      margin-bottom: calc((100vw - (var(--polaroid-width) * 1.12)) / 2);
       align-self: end;
     }
   }
-  padding: 0px 10vw;
+  margin: 0px 10vw;
 }
 
 .stickyCard {
@@ -66,9 +65,11 @@ defineProps({
     position: static;
   }
   transform-origin: center center;
-  z-index: 2;
   width: min-content;
   transition: all 0.5s ease;
+  a {
+    z-index: 2;
+  }
 }
 
 .container:hover {

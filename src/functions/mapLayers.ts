@@ -180,7 +180,6 @@ export async function addLayersAndSources() {
     type: 'line',
     source: 'detail-tracks',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-
     paint: {
       'line-color': 'rgb(110, 25, 25)',
       'line-width': 6
@@ -202,6 +201,7 @@ export async function addLayersAndSources() {
     id: 'detail-tracks-bus',
     type: 'line',
     source: 'detail-tracks',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: {
       // 'line-color': '#aa8c53',
       'line-color': 'rgb(110, 25, 25)',
@@ -213,6 +213,7 @@ export async function addLayersAndSources() {
     id: 'detail-tracks-bus-dashes',
     type: 'line',
     source: 'detail-tracks',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: {
       'line-color': '#aa8c53',
       // 'line-color': 'rgb(110, 25, 25)',

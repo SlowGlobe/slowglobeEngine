@@ -26,7 +26,7 @@ function closeDialog() {
       <button>
         <iconify-icon class="iconButtons" icon="mdi:bell" inline></iconify-icon>
       </button>
-      <p>Get notifications in your browser</p>
+      <p>Get notifications in your browser (coming soon)</p>
       <div class="dividingLine"></div>
       <!-- <input type="email" placeholder="myname@example.com" /> -->
       <button>
@@ -38,8 +38,6 @@ function closeDialog() {
       </button> -->
     </div>
   </dialog>
-  <br />
-  <br />
   <div class="center">
     <div class="signOffCont">
       <button class="stampImage" @click="showDialog">
@@ -49,7 +47,6 @@ function closeDialog() {
       <PostageStamp :image="headerImage" style="left: 0.75em"></PostageStamp>
     </div>
   </div>
-  <br />
 </template>
 
 <style scoped>

@@ -135,6 +135,7 @@ defineProps({
   font-size: 1.6em;
   font-weight: 400;
   font-style: normal;
+  text-align: center;
   bottom: 5px;
   padding: 5px 5px;
   margin: 0;

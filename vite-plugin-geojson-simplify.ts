@@ -41,7 +41,10 @@ export default function viteGeoJsonSimplify(): Plugin {
         const geojson = JSON.parse(fileContent)
         const output = featureCollection([])
         featureEach(geojson, (currentFeature) => {
-          if (currentFeature.geometry.type == 'LineString') output.features.push(currentFeature)
+          if (currentFeature.geometry.type == 'LineString') {
+            currentFeature.properties = {}
+            output.features.push(currentFeature)
+          }
         })
         const simplified = simplify(output, { tolerance: 0.01 })
         return `

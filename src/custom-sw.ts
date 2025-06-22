@@ -10,10 +10,12 @@ self.addEventListener('push', (event: any) => {
 
   const data = event.data.json()
 
+  const pageUrl = window.location.href
+
   const options = {
     body: data.body,
-    badge: '/favicon-96x96.png',
-    icon: '/logoStamp.svg',
+    badge: pageUrl + '/favicon-96x96.png',
+    icon: pageUrl + '/logoStamp.svg',
     image: data.imgUrl,
     vibrate: [100, 50, 100],
     data: {

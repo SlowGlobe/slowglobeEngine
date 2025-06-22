@@ -14,6 +14,7 @@ import {
 import { allTrips } from '~/allTrips'
 import { useRouter } from 'vue-router'
 import AboutDetail from '~/AboutDetail.vue'
+import SubscriptionBox from '@/components/SubscriptionBox.vue'
 
 const { showHikingLayers } = useHikingLayers()
 const { setMapInteractive } = useMapInteractive()
@@ -61,7 +62,8 @@ function showNotification() {
 
 <template>
   <!-- When scroll animation has better browser support, look at this https://scroll-driven-animations.style/demos/stacking-cards/css/ -->
-  <iconify-icon icon="mdi:bell" class="notifBell" inline @click="showNotification"></iconify-icon>
+  <SubscriptionBox />
+  <!-- <iconify-icon icon="mdi:bell" class="notifBell" inline @click="showNotification"></iconify-icon> -->
   <div class="polaroidGrid">
     <div
       class="mapSpacer"
@@ -108,25 +110,6 @@ function showNotification() {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.notifBell {
-  position: fixed;
-  top: 16px;
-  right: 10px;
-  z-index: 0;
-  font-size: 2.2em;
-  color: var(--primary);
-  opacity: 0.6;
-  cursor: pointer;
-  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2));
-  @media (width <= 900px) {
-    z-index: 0;
-    top: unset;
-    right: unset;
-    bottom: 10px;
-    left: 10px;
-  }
 }
 
 .polaroidGrid {

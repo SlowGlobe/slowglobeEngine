@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue'
-import PostageStamp from './PostageStamp.vue'
-
-defineProps<{
-  headerImage: string
-}>()
+import { computed, ref, useTemplateRef } from 'vue'
+import { usePermission } from '@vueuse/core'
+import {
+  requestNotificationPermission,
+  subscribeToPushNotifications,
+  testPushNotifications
+} from '@/functions/pushNotifications'
 
 const dialog = useTemplateRef('subDialog')
 function showDialog() {
@@ -17,68 +18,146 @@ function closeDialog() {
     dialog.value.close()
   }
 }
+
+function pushCheckIfSubscribed() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.pushManager.getSubscription().then((subscription) => {
+        if (subscription) {
+          console.log('Already subscribed:', subscription)
+          pushManagerIsSubscribed.value = true
+        } else {
+          console.log('Not subscribed')
+          pushManagerIsSubscribed.value = false
+        }
+      })
+    })
+  } else {
+    console.warn('Service workers are not supported in this browser.')
+    pushManagerIsSubscribed.value = false
+    pushUnsupportedBrowser.value = true
+  }
+}
+
+const pushUnsupportedBrowser = ref(false)
+const pushManagerIsSubscribed = ref(false)
+const pushPermissionPushAllowed = usePermission('push')
+const pushPermissionNotificationAllowed = usePermission('notifications')
+pushCheckIfSubscribed()
+const pushAllGood = computed(() => {
+  return pushPermissionNotificationAllowed.value === 'granted' && pushManagerIsSubscribed.value
+})
+
+const pushErrorMessage = ref('')
+
+function showError(message: string, type: 'push' | 'email' = 'push') {
+  console.error(message)
+  if (type === 'push') {
+    pushErrorMessage.value = message
+  }
+}
+
+async function pushUnsubscribe() {
+  pushErrorMessage.value = '' // Reset error message
+  if (!pushManagerIsSubscribed.value) {
+    showError('You are not subscribed to push notifications.')
+    return
+  }
+
+  // Unsubscribe from push notifications
+  try {
+    const registration = await navigator.serviceWorker.ready
+    const subscription = await registration.pushManager.getSubscription()
+    if (subscription) {
+      await subscription.unsubscribe()
+      pushManagerIsSubscribed.value = false
+      console.log('Unsubscribed from push notifications.')
+      pushCheckIfSubscribed()
+    } else {
+      showError('No active subscription found.')
+    }
+  } catch (error) {
+    console.error('Failed to unsubscribe:', error)
+    showError('Failed to unsubscribe from push notifications.')
+  }
+}
+
+async function pushSubscribe() {
+  pushErrorMessage.value = '' // Reset error message
+  //Check if this browser supports service workers and push notifications
+  if (pushUnsupportedBrowser.value) {
+    showError(
+      'Push notifications are not supported in this browser. Try another browser like Chrome or Firefox.'
+    )
+    return
+  }
+
+  //Check permissions
+  await requestNotificationPermission()
+  if (pushPermissionNotificationAllowed.value !== 'granted') {
+    showError('Push notifications are not allowed. Please enable them in your browser settings.')
+    return
+  }
+
+  // do the subscription on the server
+  if (!pushManagerIsSubscribed.value) {
+    const subscription = await subscribeToPushNotifications()
+    if (subscription != null) {
+      pushManagerIsSubscribed.value = true
+    } else {
+      showError('Failed to subscribe to push notification service.')
+      return
+    }
+  } else {
+    console.log('Already subscribed to push notifications.')
+  }
+  pushCheckIfSubscribed()
+  testPushNotifications()
+}
 </script>
 
 <template>
   <dialog ref="subDialog" class="outerDialog" closedby="any">
     <div class="subBox">
       <h1 class="title">Subscribe for Updates</h1>
-      <button>
-        <iconify-icon class="iconButtons" icon="mdi:bell" inline></iconify-icon>
+
+      <button @click="pushSubscribe" class="roundBtn">
+        <iconify-icon v-if="!pushAllGood" class="iconButtons" icon="mdi:bell" inline></iconify-icon>
+        <iconify-icon v-else class="iconButtons" icon="mdi:bell-check" inline></iconify-icon>
       </button>
-      <p>Get notifications in your browser (coming soon)</p>
+      <p v-if="pushAllGood">You're subscribed to web push notifications.</p>
+      <button v-if="pushAllGood" @click="pushUnsubscribe" class="unsubBtn">Unsubscribe</button>
+      <p v-else>Get notifications in your browser</p>
+      <p v-if="pushErrorMessage.length" style="color: red">Error: {{ pushErrorMessage }}</p>
+
       <div class="dividingLine"></div>
+      <p>{{ pushPermissionPushAllowed }} push</p>
+      <p>{{ pushPermissionNotificationAllowed }} notif</p>
+      <p>{{ pushManagerIsSubscribed }} pushManagerSubscribe</p>
+      <p>{{ pushAllGood }} pushAllGood</p>
+      <div class="dividingLine"></div>
+
       <!-- <input type="email" placeholder="myname@example.com" /> -->
-      <button>
+      <button class="roundBtn">
         <iconify-icon class="iconButtons" icon="mdi:email" inline></iconify-icon>
       </button>
       <p>Get emails in your inbox (coming soon)</p>
-      <!-- <button autofocus @click="closeDialog">
-        <iconify-icon class="iconButtons" icon="mdi:close" inline></iconify-icon>
-      </button> -->
+
+      <button autofocus @click="closeDialog" class="unsubBtn closeBtn">Close</button>
     </div>
   </dialog>
-  <div class="center">
-    <div class="signOffCont">
-      <button class="stampImage" @click="showDialog">
-        <img class="stampImage" src="/images/subscribeStampWithWaves.svg" />
-      </button>
-      <!-- <img class="stampImage" src="/images/subscribeStampWithWaves.svg" /> -->
-      <PostageStamp :image="headerImage" style="left: 0.75em"></PostageStamp>
-    </div>
-  </div>
+  <slot :showDialog="showDialog">
+    <iconify-icon
+      v-if="pushAllGood"
+      icon="mdi:bell"
+      class="notifBell"
+      inline
+      @click="showDialog"
+    ></iconify-icon>
+  </slot>
 </template>
 
 <style scoped>
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.signOffCont {
-  rotate: -2deg;
-  padding: 1.5em;
-}
-.stampImage {
-  height: calc(5.5rem + 8px);
-  width: calc(5.5rem + 8px);
-  object-fit: cover;
-  object-position: left;
-  overflow: visible;
-  position: relative;
-  right: 0.75em;
-  z-index: 2;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-.stampImage:hover {
-  background-color: transparent;
-  scale: 1.05;
-  transition: scale 0.15s linear;
-}
-
 p {
   font-family: 'Public Sans', sans-serif;
 }
@@ -88,6 +167,7 @@ p {
   background-color: var(--md-sys-color-surface);
 }
 .outerDialog {
+  text-align: center;
   border: none;
   background: none;
   padding: 0px;
@@ -143,11 +223,11 @@ p {
   transition:
     background 250ms ease-in-out,
     transform 150ms ease;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
   color: var(--tertiary);
   background-color: color-mix(in srgb, var(--tertiary) 20%, transparent);
+}
+
+button.roundBtn {
   aspect-ratio: 1/1;
   border-radius: 50%;
 }
@@ -164,5 +244,34 @@ button:focus {
 
 button:active {
   transform: scale(0.99);
+}
+
+button.unsubBtn {
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+button.closeBtn {
+  margin-top: 3em;
+}
+
+.notifBell {
+  position: fixed;
+  top: 16px;
+  right: 10px;
+  z-index: 0;
+  font-size: 2.2em;
+  color: var(--primary);
+  opacity: 0.6;
+  cursor: pointer;
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2));
+  @media (width <= 900px) {
+    z-index: 0;
+    top: unset;
+    right: unset;
+    bottom: 10px;
+    left: 10px;
+  }
 }
 </style>

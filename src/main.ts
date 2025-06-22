@@ -8,6 +8,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { DataLoaderPlugin } from 'unplugin-vue-router/data-loaders'
+import './registerSW'
 
 const app = createApp(App)
 

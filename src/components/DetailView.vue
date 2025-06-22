@@ -6,7 +6,17 @@
     <slot></slot>
     <div class="footer">
       <!-- <PostageStamp :image="headerImage"></PostageStamp> <br /> -->
-      <SubscriptionBox :header-image="headerImage" />
+      <SubscriptionBox v-slot="{ showDialog }">
+        <div class="center">
+          <div class="signOffCont">
+            <button class="stampImage" @click="showDialog">
+              <img class="stampImage" src="/images/subscribeStampWithWaves.svg" />
+            </button>
+            <!-- <img class="stampImage" src="/images/subscribeStampWithWaves.svg" /> -->
+            <PostageStamp :image="headerImage" style="left: 0.75em"></PostageStamp>
+          </div>
+        </div>
+      </SubscriptionBox>
     </div>
   </div>
 </template>
@@ -38,6 +48,35 @@
     mask: var(--topCutoutMask);
     margin-bottom: 4em;
   }
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.signOffCont {
+  rotate: -2deg;
+  padding: 1.5em;
+}
+.stampImage {
+  height: calc(5.5rem + 8px);
+  width: calc(5.5rem + 8px);
+  object-fit: cover;
+  object-position: left;
+  overflow: visible;
+  position: relative;
+  right: 0.75em;
+  z-index: 2;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.stampImage:hover {
+  background-color: transparent;
+  scale: 1.05;
+  transition: scale 0.15s linear;
 }
 </style>
 

@@ -82,7 +82,7 @@ try {
   if (!existsSync(path + '/flight_data') && flight) mkdirSync(path + '/flight_data')
   if (!existsSync(path + '/hike_data') && hike) mkdirSync(path + '/hike_data')
 
-  if (createGeojsonFile) writeFileSync(path + '/geometry.geojson', '')
+  if (createGeojsonFile) writeFileSync(path + '/geometry.geojson', '{}')
   writeFileSync(path + '/' + id + '.ts', typescriptContent)
   writeFileSync(
     '../trips/' +

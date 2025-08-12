@@ -280,6 +280,7 @@ export function showOverviews(value: boolean) {
   const detailLayers = [
     'detail-tracks-walk',
     'detail-tracks-drive',
+    'detail-tracks-boat',
     'detail-tracks-train',
     'detail-tracks-train-dashes',
     'detail-tracks-bus',

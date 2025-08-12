@@ -176,6 +176,18 @@ export async function addLayersAndSources() {
     filter: ['==', 'type', 'drive']
   })
   map.addLayer({
+    id: 'detail-tracks-boat',
+    type: 'line',
+    source: 'detail-tracks',
+    paint: {
+      'line-color': '#aa8c53',
+      // 'line-color': 'rgb(110, 25, 25)',
+      'line-width': 6
+    },
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    filter: ['==', 'type', 'boat']
+  })
+  map.addLayer({
     id: 'detail-tracks-train',
     type: 'line',
     source: 'detail-tracks',

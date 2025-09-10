@@ -121,52 +121,61 @@ const imageList = computed(() =>
   })
 )
 
-const galleryImages = asyncComputed(async () => {
-  if (!imageList.value) return []
-  const gImages: Array<{
-    href: string
-    thumbnail: string
-    coords?: [number, number]
-    captionText: string
-    hasCaption: boolean
-    type: 'image' | 'video'
-    size: string
-  }> = []
-  for (const path of imageList.value) {
-    const imageModule = await path.imageModule()
-    const coords = path.coords
-    const caption = path?.caption ?? '&nbsp;'
+const galleryImages = asyncComputed(
+  async () => {
+    if (!imageList.value) return []
+    const gImages: Array<{
+      href: string
+      thumbnail: string
+      coords?: [number, number]
+      captionText: string
+      hasCaption: boolean
+      type: 'image' | 'video'
+      size: string
+    }> = []
+    for (const path of imageList.value) {
+      if (!path.imageModule) {
+        console.warn("Couldn't find image " + JSON.stringify(path))
+        continue
+      }
+      const imageModule = await path.imageModule()
+      const coords = path.coords
+      const caption = path?.caption ?? '&nbsp;'
 
-    const thumbnail = !Array.isArray(imageModule)
-      ? imageModule
-      : imageList.value.length == 1
-        ? imageModule[1]
-        : imageModule[0]
+      const thumbnail = !Array.isArray(imageModule)
+        ? imageModule
+        : imageList.value.length == 1
+          ? imageModule[1]
+          : imageModule[0]
 
-    const output = {
-      coords,
-      captionText: caption,
-      hasCaption: !!path?.caption,
-      size: '',
-      href: '',
-      thumbnail: thumbnail.src,
-      type: 'image' as 'video' | 'image'
+      const output = {
+        coords,
+        captionText: caption,
+        hasCaption: !!path?.caption,
+        size: '',
+        href: '',
+        thumbnail: thumbnail.src,
+        type: 'image' as 'video' | 'image'
+      }
+      console.log('imageModule[1]:', imageModule)
+
+      if (path.videoModule) {
+        const videoModule = await path.videoModule()
+        output.type = 'video'
+        output.href = videoModule as string
+        output.size = `${thumbnail.width * 3}-${thumbnail.height * 3}`
+      } else if (Array.isArray(imageModule) && imageModule[1]) {
+        const { width, height } = imageModule[1]
+        output.size = `${width}-${height}`
+        output.href = imageModule[1].src
+      }
+      gImages.push(output)
     }
-
-    if (path.videoModule) {
-      const videoModule = await path.videoModule()
-      output.type = 'video'
-      output.href = videoModule as string
-      output.size = `${thumbnail.width * 3}-${thumbnail.height * 3}`
-    } else if (Array.isArray(imageModule) && imageModule[1]) {
-      const { width, height } = imageModule[1]
-      output.size = `${width}-${height}`
-      output.href = imageModule[1].src
-    }
-    gImages.push(output)
-  }
-  return gImages
-})
+    return gImages
+  },
+  null,
+  { onError: (e) => console.error(e) }
+)
 
 watch(galleryImages, () => nextTick(updateSlides))
 onMounted(updateSlides)

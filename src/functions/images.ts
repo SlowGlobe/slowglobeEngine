@@ -11,11 +11,13 @@ export const allTripImages = import.meta.glob(
   ],
   {
     query: {
-      w: '400;',
-      // h: '300;',
+      // w: '400;',
+      // aspect: '1',
+      h: '400;',
       format: 'webp',
       as: 'metadata'
-    }, // '?w=300&h=300&format=webp&as=metadata',
+    },
+    // query: '?w=400&h=400&format=webp&as=metadata',
     import: 'default'
   }
 ) as ImageModules

@@ -107,14 +107,14 @@ const imageList = computed(() =>
     if (base.endsWith('.m4v')) {
       const imgName = base.split('.')[0] + '_thumb'
       return {
-        imageModule: allTripVideoThumbs[fullVideoPathThumbsLookup[imgName]],
-        videoModule: allTripVideos[fullVideoPathLookup[base]],
+        imageModule: allTripVideoThumbs[fullVideoPathThumbsLookup[imgName] ?? 0],
+        videoModule: allTripVideos[fullVideoPathLookup[base] ?? 0],
         coords: typeof i == 'string' ? undefined : i?.coords,
         caption: typeof i == 'string' ? undefined : i?.caption
       }
     }
     return {
-      imageModule: allTripImages[fullPathLookup[base]],
+      imageModule: allTripImages[fullPathLookup[base] ?? 0],
       coords: typeof i == 'string' ? undefined : i?.coords,
       caption: typeof i == 'string' ? undefined : i?.caption
     }
@@ -184,8 +184,8 @@ const target = ref(null)
 let markers: Marker[] = []
 
 if (props.addPhotosToMap) {
-  useIntersectionObserver(target, ([{ isIntersecting }]) => {
-    if (isIntersecting && galleryImages.value) {
+  useIntersectionObserver(target, ([entry]) => {
+    if (entry?.isIntersecting && galleryImages.value) {
       for (const [index, entry] of galleryImages.value.entries()) {
         // Create a DOM element for each marker.
         if (!entry.coords) continue

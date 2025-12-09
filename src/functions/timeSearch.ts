@@ -16,7 +16,7 @@ function index(arr: string[], compare: (...args: [Date, Date]) => number, target
     r = arr.length - 1
   while (l <= r) {
     const m = l + ((r - l) >> 1)
-    const comp = compare(parseISO(arr[m]), target)
+    const comp = compare(parseISO(arr[m]!), target)
     if (comp < 0)
       // arr[m] comes before the element
       l = m + 1

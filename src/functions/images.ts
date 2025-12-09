@@ -33,7 +33,7 @@ export const fullPathLookup = Object.keys(allTripImages).reduce(
 )
 
 export function getImage(imgName: string) {
-  return allTripImages[fullPathLookup[imgName]]
+  return allTripImages[fullPathLookup[imgName] ?? 0]
 }
 
 export const allTripVideos = import.meta.glob('~/**/videos/o_*.m4v', {

@@ -26,11 +26,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const tripId = to.path.startsWith('/trip/') ? to.path.split('/')[2] : ''
-  const result = getTripById(tripId)
-  if (result && result.name) {
-    document.title = result.name
-    return
+  if (to.path.startsWith('/trip/')) {
+    const [, , tripId = ''] = to.path.split('/')
+    const result = getTripById(tripId)
+    if (result && result.name) {
+      document.title = result.name
+      return
+    }
   }
   document.title = 'Slow Globe'
 })

@@ -122,7 +122,7 @@ function generateFrame(time: number) {
     follow: { shouldFollow: props.follow, followCameraLine, followCameraLineLength }
   })
   if (results.progressTime) currentTime.value = results.progressTime
-  if (results.camPos) cameraPos = { lat: results.camPos[1], lng: results.camPos[0] }
+  if (results.camPos) cameraPos = { lat: results.camPos[1]!, lng: results.camPos[0]! }
   if (results.camBearing) camBearing = results.camBearing
   if (typeof props.lockBearing === 'number') camBearing = props.lockBearing
   const source = map.getSource(randomId + 'Follow') as GeoJSONSource
@@ -256,8 +256,8 @@ function doPreScrollAnimation() {
     })
     if (result.camPos && result.camBearing)
       perScrollFinalCameraPosition = {
-        lat: result.camPos[1],
-        lng: result.camPos[0],
+        lat: result.camPos[1]!,
+        lng: result.camPos[0]!,
         bearing: typeof props.lockBearing === 'number' ? props.lockBearing : result.camBearing
       }
   }
@@ -294,8 +294,8 @@ function doPreScrollAnimation() {
     })
 }
 
-function onTopBoundsFrame([{ isIntersecting }]: IntersectionObserverEntry[]) {
-  if (isIntersecting) {
+function onTopBoundsFrame([entry]: IntersectionObserverEntry[]) {
+  if (entry && entry.isIntersecting) {
     fitBounds(fullGeometry, undefined, props.overviewPitch ?? 0, 500)
     const map = getMap()
     if (!map) return
@@ -308,8 +308,8 @@ function onTopBoundsFrame([{ isIntersecting }]: IntersectionObserverEntry[]) {
   }
 }
 
-function onIntersectionObserver([{ isIntersecting }]: IntersectionObserverEntry[]) {
-  if (isIntersecting) {
+function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
+  if (entry && entry.isIntersecting) {
     const map = getMap()
     if (!map) return
     if (!map.getSource(randomId + 'Follow')) {
@@ -377,8 +377,8 @@ function onIntersectionObserver([{ isIntersecting }]: IntersectionObserverEntry[
 
 useIntersectionObserver(
   entireComponent,
-  ([{ isIntersecting }]) => {
-    if (isIntersecting) {
+  ([entry]) => {
+    if (entry && entry.isIntersecting) {
       showLocationArrow(true)
       showHikingLayers(props.satellite ?? true)
     } else {

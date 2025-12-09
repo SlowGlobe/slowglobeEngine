@@ -194,8 +194,8 @@ export async function showTracks(id: string, sequence?: Reveal) {
           output.push(currentFeature)
         else if (Array.isArray(sequence) && sequence.length == 2) {
           if (
-            currentFeature.properties.order <= sequence[1] &&
-            currentFeature.properties.order >= sequence[0]
+            currentFeature.properties.order <= sequence[1]! &&
+            currentFeature.properties.order >= sequence[0]!
           )
             output.push(currentFeature)
         } else if (

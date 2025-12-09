@@ -34,13 +34,13 @@ onUnmounted(() => {
   showOverviews(false)
 })
 
-function onIntersectionObserver([{ isIntersecting, target }]: IntersectionObserverEntry[]) {
-  if (isIntersecting && target.id) {
-    if (target.id === 'topOfPage' && router.currentRoute.value.name == '/') {
+function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
+  if (entry && entry.isIntersecting && entry.target.id) {
+    if (entry.target.id === 'topOfPage' && router.currentRoute.value.name == '/') {
       showGlobe()
       setMapSpin(true)
     } else {
-      zoomToId(target.id)
+      zoomToId(entry.target.id)
     }
   }
 }

@@ -123,8 +123,8 @@ function flyToCenter() {
   }
 }
 
-function onIntersectionObserver([{ isIntersecting }]: IntersectionObserverEntry[]) {
-  if (isIntersecting) {
+function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
+  if (entry && entry.isIntersecting) {
     shouldAnimate.value = true
     flyToCenter()
     showHikingLayers(props.satellite ?? false)

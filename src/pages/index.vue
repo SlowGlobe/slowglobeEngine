@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { vIntersectionObserver } from '@vueuse/components'
-import { computed, onBeforeMount, onUnmounted } from 'vue'
+import { computed, onBeforeMount, onMounted, onUnmounted } from 'vue'
 import PolaroidPicture from '@/components/PolaroidPicture.vue'
 import {
   setMapSpin,
@@ -53,10 +53,17 @@ const intMarg = computed(() => {
   }
   return '-45% 0px -45% 0px'
 })
+
+onMounted(() => {
+  document.addEventListener('scrollsnapchange', (event) => {
+    console.log('scrollsnapchange event:', event.snapTargetBlock)
+  })
+})
 </script>
 
 <template>
   <!-- When scroll animation has better browser support, look at this https://scroll-driven-animations.style/demos/stacking-cards/css/ -->
+  <!-- Can also look at scrollsnapchange event when that has better support instead of intersection observers on every card -->
   <div class="polaroidGrid">
     <div
       class="mapSpacer"
@@ -152,6 +159,7 @@ const intMarg = computed(() => {
 .halfHeight {
   scroll-snap-align: none;
   height: 50vh;
+  background-color: blue;
 }
 
 .mapSpacer:first-child {
@@ -175,7 +183,7 @@ const intMarg = computed(() => {
   font-family: 'Reenie Beanie', 'Courier New', Courier, monospace;
   line-height: 2em;
   font-size: 2em;
-  scroll-snap-align: none;
+  /* scroll-snap-align: none; */
 
   /* animation:
     hover 3s ease-in-out infinite alternate,

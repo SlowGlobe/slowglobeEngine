@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { vIntersectionObserver } from '@vueuse/components'
-import { computed, onBeforeMount, onMounted, onUnmounted } from 'vue'
+import { computed, onBeforeMount, onUnmounted } from 'vue'
 import PolaroidPicture from '@/components/PolaroidPicture.vue'
 import {
   setMapSpin,
@@ -52,12 +52,6 @@ const intMarg = computed(() => {
     return '-60% 0px -30px 0px'
   }
   return '-45% 0px -45% 0px'
-})
-
-onMounted(() => {
-  document.addEventListener('scrollsnapchange', (event) => {
-    console.log('scrollsnapchange event:', event.snapTargetBlock)
-  })
 })
 </script>
 

@@ -126,7 +126,11 @@ const degreesToRads = (deg: number) => (deg * Math.PI) / 180.0
 
 const alts: number[] = []
 
-export function getCameraForCameraOptions(camOptions: CameraOptions): any {
+type CustomFreeCameraOptions = Omit<typeof mapboxgl.FreeCameraOptions, 'prototype'>
+
+export function getCameraForCameraOptions(
+  camOptions: CameraOptions
+): CustomFreeCameraOptions | undefined {
   const map = getMap()
   if (!map) return
   const sx = map.transform._mercatorZfromZoom(camOptions.zoom || map.getZoom())

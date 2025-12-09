@@ -56,7 +56,7 @@ const fZoom = props.followZoom ?? 14.5
 
 let fullGeometry: Feature<LineString>
 let percentShown = 0
-let shouldAnimate = ref(false)
+const shouldAnimate = ref(false)
 const currentTime = ref('')
 let followCameraLine: Feature<LineString>
 let followCameraLineLength = 0
@@ -141,7 +141,7 @@ function generateFrame(time: number) {
         bearing: camBearing
       })
 
-      if (camera) map.setFreeCameraOptions(camera)
+      if (camera) map.setFreeCameraOptions(camera as never)
     }
   }
   const locArrowSource = map.getSource(randomId + 'locArrow') as GeoJSONSource

@@ -25,7 +25,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const tripId = to.path.startsWith('/trip/') ? to.path.split('/')[2] : ''
   const result = getTripById(tripId)
   if (result && result.name) {

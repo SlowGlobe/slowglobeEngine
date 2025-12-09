@@ -15,7 +15,8 @@ export const allTripImages = import.meta.glob(
       // aspect: '1',
       h: '400;',
       format: 'webp',
-      as: 'metadata'
+      as: 'metadata',
+      noAutoOrient: 'false'
     },
     // query: '?w=400&h=400&format=webp&as=metadata',
     import: 'default'

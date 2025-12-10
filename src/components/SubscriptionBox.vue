@@ -137,13 +137,18 @@ async function pushSubscribe() {
       <p v-else>Get notifications in your browser</p>
       <button v-if="pushAllGood" @click="testPushNotifications" class="unsubBtn">Test</button>
       <p v-if="pushErrorMessage.length" style="color: red">Error: {{ pushErrorMessage }}</p>
+      <p v-if="pushUnsupportedBrowserSafariHint" style="color: orange">
+        It looks like you might be using Safari, which is a terrible choice. <br />On iOS, push
+        notifications are only supported if you add this site to your home screen.<br />
+        Which is of course, intuitively, in the share menu...
+      </p>
 
-      <div class="dividingLine"></div>
+      <!-- <div class="dividingLine"></div>
       <p>{{ pushPermissionPushAllowed }} push</p>
       <p>{{ pushPermissionNotificationAllowed }} notif</p>
       <p>{{ pushManagerIsSubscribed }} pushManagerSubscribe</p>
       <p>{{ pushAllGood }} pushAllGood</p>
-      <p>{{ pushUnsupportedBrowserSafariHint }} pushUnsupportedBrowserSafariHint</p>
+      <p>{{ pushUnsupportedBrowserSafariHint }} pushUnsupportedBrowserSafariHint</p> -->
       <div class="dividingLine"></div>
 
       <!-- <input type="email" placeholder="myname@example.com" /> -->

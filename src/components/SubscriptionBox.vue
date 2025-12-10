@@ -128,6 +128,7 @@ async function pushSubscribe() {
       <p v-if="pushAllGood">You're subscribed to web push notifications.</p>
       <button v-if="pushAllGood" @click="pushUnsubscribe" class="unsubBtn">Unsubscribe</button>
       <p v-else>Get notifications in your browser</p>
+      <button v-if="pushAllGood" @click="testPushNotifications" class="unsubBtn">Test</button>
       <p v-if="pushErrorMessage.length" style="color: red">Error: {{ pushErrorMessage }}</p>
 
       <div class="dividingLine"></div>
@@ -251,6 +252,7 @@ button.unsubBtn {
   border-radius: 0.5em;
   text-transform: uppercase;
   font-size: 0.8em;
+  margin: 0.5em;
 }
 button.closeBtn {
   margin-top: 3em;

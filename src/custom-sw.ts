@@ -1,16 +1,18 @@
 /// <reference lib="webworker" />
-//@ts-nocheck
+
+declare let self: ServiceWorkerGlobalScope
 
 // Precache manifest will be injected here
 import { precacheAndRoute } from 'workbox-precaching'
 precacheAndRoute(self.__WB_MANIFEST)
 
-self.addEventListener('push', (event: any) => {
+self.addEventListener('push', (event) => {
   if (!event.data) return
+  console.log('event:', event)
 
   const data = event.data.json()
 
-  const pageUrl = window.location.href
+  const pageUrl = self.location.href
 
   const options = {
     body: data.body,
@@ -26,20 +28,20 @@ self.addEventListener('push', (event: any) => {
   event.waitUntil(self.registration.showNotification(data.title, options))
 })
 
-self.addEventListener('notificationclick', (event: any) => {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close()
 
   const url = event.notification.data.url
 
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then((clientList) => {
+    self.clients.matchAll({ type: 'window' }).then((clientList) => {
       for (const client of clientList) {
         if (client.url === url && 'focus' in client) {
           return client.focus()
         }
       }
-      if (clients.openWindow) {
-        return clients.openWindow(url)
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(url)
       }
     })
   )

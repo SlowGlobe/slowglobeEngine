@@ -3,12 +3,14 @@
 declare let self: ServiceWorkerGlobalScope
 
 // Precache manifest will be injected here
-import { precacheAndRoute } from 'workbox-precaching'
+import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching'
 precacheAndRoute(self.__WB_MANIFEST)
+
+cleanupOutdatedCaches()
 
 self.addEventListener('push', (event) => {
   if (!event.data) return
-  console.log('event:', event)
+  console.log('event info herewow:', event)
 
   const data = event.data.json()
 

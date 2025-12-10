@@ -22,6 +22,11 @@ function closeDialog() {
 function pushCheckIfSubscribed() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((registration) => {
+      if (!('pushManager' in registration)) {
+        console.warn('Push manager is not supported in this browser. Probably safari.')
+        pushUnsupportedBrowserSafariHint.value = true
+      }
+
       registration.pushManager.getSubscription().then((subscription) => {
         if (subscription) {
           console.log('Already subscribed:', subscription)
@@ -40,6 +45,7 @@ function pushCheckIfSubscribed() {
 }
 
 const pushUnsupportedBrowser = ref(false)
+const pushUnsupportedBrowserSafariHint = ref(false)
 const pushManagerIsSubscribed = ref(false)
 const pushPermissionPushAllowed = usePermission('push')
 const pushPermissionNotificationAllowed = usePermission('notifications')
@@ -83,6 +89,7 @@ async function pushUnsubscribe() {
 }
 
 async function pushSubscribe() {
+  console.log('Attempting to subscribe to push notifications...')
   pushErrorMessage.value = '' // Reset error message
   //Check if this browser supports service workers and push notifications
   if (pushUnsupportedBrowser.value) {
@@ -136,6 +143,7 @@ async function pushSubscribe() {
       <p>{{ pushPermissionNotificationAllowed }} notif</p>
       <p>{{ pushManagerIsSubscribed }} pushManagerSubscribe</p>
       <p>{{ pushAllGood }} pushAllGood</p>
+      <p>{{ pushUnsupportedBrowserSafariHint }} pushUnsupportedBrowserSafariHint</p>
       <div class="dividingLine"></div>
 
       <!-- <input type="email" placeholder="myname@example.com" /> -->

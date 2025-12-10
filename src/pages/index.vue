@@ -153,7 +153,6 @@ const intMarg = computed(() => {
 .halfHeight {
   scroll-snap-align: none;
   height: 50vh;
-  background-color: blue;
 }
 
 .mapSpacer:first-child {

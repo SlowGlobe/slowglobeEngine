@@ -114,9 +114,10 @@ onMounted(() => {
 })
 const router = useRouter()
 
-function onIntersectionObserver([{ isIntersecting }]: IntersectionObserverEntry[]) {
+function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
+  if (!entry) return
   const pathId = router.currentRoute.value.path.split('/')?.[2] ?? ''
-  if (isIntersecting && pathId == tripId?.value) {
+  if (entry.isIntersecting && pathId == tripId?.value) {
     showArticleStart(tripId?.value ?? '')
     showTracks(tripId?.value ?? '')
     showHikingLayers(false)

@@ -28,9 +28,9 @@ function getForwardBearing(
     Math.min(Math.max((progress + 0.01) * lineLength, 0.001), lineLength)
   )
   const currPos =
-    currentPosLine.geometry.coordinates[currentPosLine.geometry.coordinates.length - 1]
+    currentPosLine.geometry.coordinates[currentPosLine.geometry.coordinates.length - 1]!
   const forwardPos =
-    forwardPosLine.geometry.coordinates[forwardPosLine.geometry.coordinates.length - 1]
+    forwardPosLine.geometry.coordinates[forwardPosLine.geometry.coordinates.length - 1]!
   const forwardBearing = bearing(currPos, forwardPos)
 
   return {
@@ -88,10 +88,10 @@ export function getPercGeom(
 
     if (options.useTime) {
       const coordIndexAtTime = findClosestFrame(timeArray, progressDate)
-      const coord = geom.geometry.coordinates[coordIndexAtTime]
+      const coord = geom.geometry.coordinates[coordIndexAtTime]!
 
       // /find distance along line to coord, which will give us percentage distance travelled
-      const progressLine = lineSlice(geom.geometry.coordinates[0], coord, geom)
+      const progressLine = lineSlice(geom.geometry.coordinates[0]!, coord, geom)
       const progressLineLength = length(progressLine)
       progress = progressLineLength / fullGeometryDistance
     }
@@ -126,7 +126,11 @@ const degreesToRads = (deg: number) => (deg * Math.PI) / 180.0
 
 const alts: number[] = []
 
-export function getCameraForCameraOptions(camOptions: CameraOptions): any {
+type CustomFreeCameraOptions = Omit<typeof mapboxgl.FreeCameraOptions, 'prototype'>
+
+export function getCameraForCameraOptions(
+  camOptions: CameraOptions
+): CustomFreeCameraOptions | undefined {
   const map = getMap()
   if (!map) return
   const sx = map.transform._mercatorZfromZoom(camOptions.zoom || map.getZoom())

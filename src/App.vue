@@ -10,7 +10,9 @@ const shouldScrollSnap = computed(() => route.path === '/')
 const ssnapText = computed(() => (shouldScrollSnap.value ? 'y mandatory' : 'none'))
 const transitionName = computed(() => (route.path === '/' ? 'slide' : 'up'))
 
-const tripId = computed(() => (route.path.startsWith('/trip/') ? route.path.split('/')[2] : ''))
+const tripId = computed(() =>
+  route.path.startsWith('/trip/') ? (route.path.split('/')[2] ?? '') : ''
+)
 provide(tripIdSymbol, tripId)
 </script>
 

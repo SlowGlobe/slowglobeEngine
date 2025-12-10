@@ -11,11 +11,14 @@ export const allTripImages = import.meta.glob(
   ],
   {
     query: {
-      w: '400;',
-      // h: '300;',
+      // w: '400;',
+      // aspect: '1',
+      h: '400;',
       format: 'webp',
-      as: 'metadata'
-    }, // '?w=300&h=300&format=webp&as=metadata',
+      as: 'metadata',
+      noAutoOrient: 'false'
+    },
+    // query: '?w=400&h=400&format=webp&as=metadata',
     import: 'default'
   }
 ) as ImageModules
@@ -30,7 +33,7 @@ export const fullPathLookup = Object.keys(allTripImages).reduce(
 )
 
 export function getImage(imgName: string) {
-  return allTripImages[fullPathLookup[imgName]]
+  return allTripImages[fullPathLookup[imgName] ?? 0]
 }
 
 export const allTripVideos = import.meta.glob('~/**/videos/o_*.m4v', {

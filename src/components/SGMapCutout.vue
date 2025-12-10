@@ -45,8 +45,8 @@ const props = defineProps<{
 const { height } = useWindowSize()
 const tripId = inject(tripIdSymbol)
 
-function onIntersectionObserver([{ isIntersecting }]: IntersectionObserverEntry[]) {
-  if (isIntersecting) {
+function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
+  if (entry && entry.isIntersecting) {
     showHikingLayers(props.satellite ?? false)
     if (props.fitBoundsGeometry) {
       let fitGeom = props.fitBoundsGeometry ?? featureCollection([])

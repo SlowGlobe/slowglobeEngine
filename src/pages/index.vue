@@ -35,13 +35,13 @@ onUnmounted(() => {
   showOverviews(false)
 })
 
-function onIntersectionObserver([{ isIntersecting, target }]: IntersectionObserverEntry[]) {
-  if (isIntersecting && target.id) {
-    if (target.id === 'topOfPage' && router.currentRoute.value.name == '/') {
+function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
+  if (entry && entry.isIntersecting && entry.target.id) {
+    if (entry.target.id === 'topOfPage' && router.currentRoute.value.name == '/') {
       showGlobe()
       setMapSpin(true)
     } else {
-      zoomToId(target.id)
+      zoomToId(entry.target.id)
     }
   }
 }
@@ -62,6 +62,7 @@ function showNotification() {
 
 <template>
   <!-- When scroll animation has better browser support, look at this https://scroll-driven-animations.style/demos/stacking-cards/css/ -->
+  <!-- Can also look at scrollsnapchange event when that has better support instead of intersection observers on every card -->
   <SubscriptionBox />
   <!-- <iconify-icon icon="mdi:bell" class="notifBell" inline @click="showNotification"></iconify-icon> -->
   <div class="polaroidGrid">
@@ -159,6 +160,7 @@ function showNotification() {
 .halfHeight {
   scroll-snap-align: none;
   height: 50vh;
+  background-color: blue;
 }
 
 .mapSpacer:first-child {
@@ -182,7 +184,7 @@ function showNotification() {
   font-family: 'Reenie Beanie', 'Courier New', Courier, monospace;
   line-height: 2em;
   font-size: 2em;
-  scroll-snap-align: none;
+  /* scroll-snap-align: none; */
 
   /* animation:
     hover 3s ease-in-out infinite alternate,

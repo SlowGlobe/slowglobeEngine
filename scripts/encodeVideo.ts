@@ -48,7 +48,7 @@ for (const video of videoFiles) {
     output: video.parentPath + '/o_' + video.name.split('.')[0] + '.m4v',
     preset: 'Social 100 MB 5 Minutes 1080p30'
   }
-  const newSize = await doVidEnc(options, bar)
+  await doVidEnc(options, bar)
 
   // copy the original to the source_files folder
   if (!existsSync(video.parentPath + '/source_files/')) {
@@ -65,7 +65,13 @@ setTimeout(() => {
   console.log('Complete')
 }, 300)
 
-function doVidEnc(options: any, bar: any): Promise<number> {
+interface EncodeOptions {
+  input: string
+  output: string
+  preset: string
+}
+
+function doVidEnc(options: EncodeOptions, bar: cliProgress.SingleBar): Promise<number> {
   return new Promise((resolve, reject) => {
     spawn(options, null)
       .on('progress', (progress) => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container" ref="target">
+  <div class="gallery-container" ref="target">
     <lightgallery
       :settings="{
         speed: 500,
@@ -223,7 +223,7 @@ onUnmounted(removeAllMarkers)
 </script>
 
 <style lang="css" scoped>
-.container {
+.gallery-container {
   position: relative;
 }
 

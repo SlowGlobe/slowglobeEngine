@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import 'mapbox-gl/dist/mapbox-gl.css'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { useMap } from '@/functions/map'
 import { computed, provide } from 'vue'

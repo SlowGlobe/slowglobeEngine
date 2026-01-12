@@ -4,10 +4,8 @@
   <div class="wrap">
     <div class="titleRow">
       <div class="above">
-        <div class="byline">
-          {{ locationText }}
-        </div>
         <div class="date">{{ date }}</div>
+        <div class="byline">{{ locationText }}</div>
       </div>
       <PostageStamp :image="headerImage" />
     </div>
@@ -30,6 +28,7 @@
   flex-direction: row;
   gap: 1em;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .byline {
@@ -38,7 +37,7 @@
   font-family: 'Public Sans', sans-serif;
 
   font-optical-sizing: auto;
-  font-weight: 400;
+  font-weight: 550;
   font-style: normal;
 }
 
@@ -46,7 +45,8 @@
   color: var(--primary);
   font-size: 0.9em;
   font-family: 'Public Sans', sans-serif;
-  font-style: italic;
+  /* font-style: italic; */
+  font-weight: 200;
 }
 </style>
 

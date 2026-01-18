@@ -13,7 +13,8 @@
     "format": "prettier --write src/",
     "create-trip": "tsx ./scripts/createTrip.ts",
     "encode-video": "tsx ./scripts/encodeVideo.ts",
-    "convert-images": "tsx ./scripts/convertImages.ts"
+    "convert-images": "tsx ./scripts/convertImages.ts",
+    "list-images": "tsx ./scripts/listImages.ts"
   },
   "dependencies": {
     "@tmcw/togeojson": "^5.8.1",

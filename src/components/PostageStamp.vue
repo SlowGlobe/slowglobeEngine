@@ -9,6 +9,10 @@ const price = randomPrices[Math.floor(Math.random() * randomPrices.length)]
 
 <template>
   <!-- <img src="/images/stampWaves.jpg" /> -->
+  <!-- <div class="halftone">
+    <img :src="image" />
+  </div> -->
+
   <div class="postage-stamp-container">
     <div class="postage-stamp">
       <img :src="image" />
@@ -36,6 +40,36 @@ const price = randomPrices[Math.floor(Math.random() * randomPrices.length)]
       calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)),
     linear-gradient(#ffffff 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
 }
+/* https://leanrada.com/notes/pure-css-halftone/ */
+/* .halftone {
+  position: relative;
+  filter: brightness(0.8) blur(3px) contrast(999);
+}
+.halftone::after {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(10px at center, black, white), radial-gradient(10px at 5px 5px, cyan, white),
+    radial-gradient(10px at 15px 5px, magenta, white),
+    radial-gradient(10px at 10px 15px, yellow, white);
+  background-size: 20px 20px;
+  background-blend-mode: multiply;
+  mix-blend-mode: screen;
+} */
+/* .halftone {
+  position: relative;
+  filter: brightness(0.7) blur(1px) contrast(999);
+}
+.halftone::after {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(2px at center, black, white), radial-gradient(2px at 1px 1px, cyan, white),
+    radial-gradient(2px at 3px 1px, magenta, white), radial-gradient(2px at 2px 3px, yellow, white);
+  background-size: 4px 4px;
+  background-blend-mode: multiply;
+  mix-blend-mode: screen;
+} */
 
 img {
   text-align: center;

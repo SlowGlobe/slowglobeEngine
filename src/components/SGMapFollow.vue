@@ -25,7 +25,9 @@ import {
   fitBounds,
   getMap,
   useMapInteractive,
-  type MapOverlays
+  type MapOverlays,
+  type WeatherOptions,
+  setWeather
 } from '@/functions/map'
 import type { Feature, LineString } from 'geojson'
 import { bbox, bezierSpline, featureCollection, length, point, simplify } from '@turf/turf'
@@ -49,6 +51,7 @@ const props = defineProps<{
   lockBearing?: number
   satellite?: MapOverlays
   noPreScroll?: boolean
+  weather?: WeatherOptions
 }>()
 
 const fPitch = props.followPitch ?? 60
@@ -367,6 +370,8 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
         }
       })
     }
+    setWeather(props.weather ?? null)
+
     shouldAnimate.value = true
     requestAnimationFrame(generateFrame)
   } else {

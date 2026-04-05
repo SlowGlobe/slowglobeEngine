@@ -13,7 +13,14 @@
 </template>
 
 <script setup lang="ts">
-import { useHikingLayers, getMap, useMapInteractive, type MapOverlays } from '@/functions/map'
+import {
+  useHikingLayers,
+  getMap,
+  useMapInteractive,
+  type MapOverlays,
+  type WeatherOptions,
+  setWeather
+} from '@/functions/map'
 import { featureCollection, point } from '@turf/turf'
 import { vIntersectionObserver } from '@vueuse/components'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
@@ -29,6 +36,7 @@ const props = defineProps<{
   hideMarker?: boolean
   satellite?: MapOverlays
   vanishingOffset?: number
+  weather?: WeatherOptions
 }>()
 
 const { height } = useWindowSize()
@@ -129,6 +137,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
     flyToCenter()
     showHikingLayers(props.satellite ?? false)
     showLocation(true)
+    setWeather(props.weather ?? null)
   } else {
     showLocation(false)
     shouldAnimate.value = false

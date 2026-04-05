@@ -16,11 +16,13 @@
 import {
   fitBounds,
   getMap,
+  setWeather,
   showTracks,
   useHikingLayers,
   useMapInteractive,
   type MapOverlays,
-  type Reveal
+  type Reveal,
+  type WeatherOptions
 } from '@/functions/map'
 import type { Feature, FeatureCollection } from 'geojson'
 import { featureCollection } from '@turf/turf'
@@ -40,6 +42,7 @@ const props = defineProps<{
   fitOnlyToIndexes?: number[] // only use some of the features in the fitBoundsGeometry when fitting
   reveal?: Reveal // show only some parts of the trip on the map, requires the 'order' property in the features
   satellite?: MapOverlays
+  weather?: WeatherOptions
 }>()
 
 const { height } = useWindowSize()
@@ -90,6 +93,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
     if (props.reveal) {
       showTracks(tripId?.value ?? '', props.reveal)
     }
+    setWeather(props.weather ?? null)
   }
 }
 </script>

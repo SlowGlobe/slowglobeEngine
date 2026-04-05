@@ -83,12 +83,14 @@
 <script setup lang="ts">
 import {
   setMapSpin,
+  setWeather,
   showArticleStart,
   showOverviews,
   showTracks,
   useHikingLayers,
   useMapInteractive,
-  type Reveal
+  type Reveal,
+  type WeatherOptions
 } from '@/functions/map'
 import PostageStamp from './PostageStamp.vue'
 import { vIntersectionObserver } from '@vueuse/components'
@@ -100,6 +102,7 @@ import SubscriptionBox from './SubscriptionBox.vue'
 
 const props = defineProps<{
   reveal?: Reveal
+  weather?: WeatherOptions
 }>()
 
 const tripId = inject(tripIdSymbol)
@@ -111,6 +114,7 @@ onMounted(() => {
   setMapSpin(false)
   showOverviews(false)
   showTracks(tripId?.value ?? '')
+  setWeather(props.weather ?? null)
 })
 const router = useRouter()
 
@@ -124,6 +128,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
     if (props.reveal) {
       showTracks(tripId?.value ?? '', props.reveal)
     }
+    setWeather(props.weather ?? null)
   }
 }
 

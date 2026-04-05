@@ -5,6 +5,7 @@ import { computed, onBeforeMount, onUnmounted } from 'vue'
 import PolaroidPicture from '@/components/PolaroidPicture.vue'
 import {
   setMapSpin,
+  setWeather,
   showGlobe,
   showOverviews,
   useHikingLayers,
@@ -27,6 +28,7 @@ onBeforeMount(() => {
   setMapInteractive(false)
   setMapSpin(true)
   showOverviews(true)
+  setWeather(null)
 })
 
 onUnmounted(() => {

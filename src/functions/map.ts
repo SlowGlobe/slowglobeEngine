@@ -5,6 +5,7 @@ import type { Feature, FeatureCollection } from 'geojson'
 import mapboxgl, {
   GeoJSONSource,
   type EasingOptions,
+  type PropertyValueSpecification,
   type RasterLayerSpecification
 } from 'mapbox-gl'
 import { onMounted, onUnmounted, readonly, ref } from 'vue'
@@ -303,4 +304,40 @@ export function showOverviews(value: boolean) {
 
 export function getMap() {
   return map
+}
+
+export type WeatherOptions = 'rainy' | 'snowy' | 'clear' | null
+
+export function setWeather(weather: WeatherOptions) {
+  function zoomBasedReveal(value: number): PropertyValueSpecification<number> {
+    return ['interpolate', ['linear'], ['zoom'], 1, 0.0, 13, value]
+  }
+  map?.setSnow(null)
+  map?.setRain(null)
+  if (weather === 'snowy') {
+    map?.setSnow({
+      density: zoomBasedReveal(0.85),
+      intensity: 1.0,
+      'center-thinning': 0.1,
+      direction: [0, 50],
+      opacity: 1.0,
+      color: `#ffffff`,
+      'flake-size': 0.71,
+      vignette: zoomBasedReveal(0.3),
+      'vignette-color': `#ffffff`
+    })
+  } else if (weather === 'rainy') {
+    map?.setRain({
+      density: zoomBasedReveal(0.5),
+      intensity: 1.0,
+      color: '#a8adbc',
+      opacity: 0.7,
+      vignette: zoomBasedReveal(1.0),
+      'vignette-color': '#464646',
+      direction: [0, 80],
+      'droplet-size': [2.6, 18.2],
+      'distortion-strength': 0.7,
+      'center-thinning': 0 // Rain to be displayed on the whole screen area
+    })
+  }
 }

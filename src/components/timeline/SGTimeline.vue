@@ -17,9 +17,11 @@
 .startSeg {
   height: 0em;
   mask: var(--topCutoutMask);
+  margin-bottom: 2em;
 }
 .endSeg {
   height: 0em;
   mask: var(--bottomCutoutMask);
+  margin-top: 2em;
 }
 </style>

@@ -73,7 +73,7 @@ const image = computedAsync(async () => {
     ref="target"
   >
     <div class="tl-desk-photo">
-      <div :class="`tl-photo-img ${aspect}`">
+      <div :class="`tl-photo-img tl-${aspect}`">
         <img :src="image?.thumbnail" :alt="caption" />
       </div>
       <p class="tl-photo-caption">{{ caption }}</p>

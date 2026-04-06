@@ -98,11 +98,11 @@
   /* width: 90vw;
   margin-left: calc(50% - 45vw); */
   /* Set width to either 90% of viewport or the max cap */
-  width: min(1320px, 80vw);
+  width: min(1000px, 80vw);
 
   /* Calculate margin-left to be: 
      50% (parent center) minus half of the actual width */
-  margin-left: calc(50% - min(660px, 40vw));
+  margin-left: calc(50% - min(500px, 40vw));
 
   /* Remove the separate max-width as it's now handled by min() */
   max-width: none;
@@ -110,6 +110,10 @@
 
 /* ── Column spans ──────────────────────────────────────────────── */
 /* --col-pct is used by the solo last-item centering rule below */
+.tl-span-3 {
+  grid-column: span 3;
+  --col-pct: 25%;
+}
 .tl-span-4 {
   grid-column: span 4;
   --col-pct: 33.5%;
@@ -178,11 +182,11 @@
        full-row items, verify the count parity still holds, or add a
        .solo class manually as an override.
     ────────────────────────────────────────────────────────────────── */
-.tl-desk-item:last-child:nth-child(odd) {
+/* .tl-desk-item:last-child:nth-child(odd) {
   grid-column: 1 / -1;
   justify-self: center;
   width: var(--col-pct, 50%);
-}
+} */
 
 /* ── Hover: item lifts off the desk ───────────────────────────── */
 .tl-desk-item:hover {
@@ -297,6 +301,10 @@
     var(--note-bg) 1.5rem
   );
   background-size: 100% 1.5rem;
+}
+
+.tl-desk-item:has(.tl-desk-note) {
+  transform: rotate(0deg) translateY(0px);
 }
 
 .tl-note-date {

@@ -16,12 +16,14 @@
 import { useHikingLayers, getMap, useMapInteractive } from '@/functions/map'
 import { point } from '@turf/turf'
 import { useClipboard, useLocalStorage } from '@vueuse/core'
-import type { Position } from 'geojson'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, type Ref } from 'vue'
 
 const { showHikingLayers, visible } = useHikingLayers()
 
-const currentPoint = useLocalStorage('lastPointSelected', [0, 0] as Position)
+const currentPoint: Ref<[number, number]> = useLocalStorage('lastPointSelected', [0, 0] as [
+  number,
+  number
+])
 
 const { setMapInteractive } = useMapInteractive()
 

@@ -58,7 +58,7 @@ import 'lightgallery/css/lg-zoom.css'
 import 'lightgallery/css/lg-video.css'
 import type { InitDetail } from 'lightgallery/lg-events'
 import type { LightGallery } from 'lightgallery/lightgallery'
-import { asyncComputed, useIntersectionObserver } from '@vueuse/core'
+import { computedAsync, useIntersectionObserver } from '@vueuse/core'
 import {
   allTripImages,
   allTripVideos,
@@ -121,7 +121,7 @@ const imageList = computed(() =>
   })
 )
 
-const galleryImages = asyncComputed(
+const galleryImages = computedAsync(
   async () => {
     if (!imageList.value) return []
     const gImages: Array<{

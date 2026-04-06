@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { asyncComputed } from '@vueuse/core'
+import { computedAsync } from '@vueuse/core'
 import {
   allTripImages,
   allTripVideos,
@@ -59,7 +59,7 @@ const imageList = computed(() =>
   })
 )
 
-const galleryImages = asyncComputed(
+const galleryImages = computedAsync(
   async () => {
     if (!imageList.value) return []
     const gImages: Array<{

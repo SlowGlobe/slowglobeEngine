@@ -15,12 +15,13 @@
 <script setup lang="ts">
 import { useHikingLayers, getMap, useMapInteractive } from '@/functions/map'
 import { point } from '@turf/turf'
-import { useClipboard } from '@vueuse/core'
-import { computed, onMounted, ref } from 'vue'
+import { useClipboard, useLocalStorage } from '@vueuse/core'
+import type { Position } from 'geojson'
+import { computed, onMounted } from 'vue'
 
 const { showHikingLayers, visible } = useHikingLayers()
 
-const currentPoint = ref([0, 0])
+const currentPoint = useLocalStorage('lastPointSelected', [0, 0] as Position)
 
 const { setMapInteractive } = useMapInteractive()
 
@@ -51,6 +52,8 @@ onMounted(() => {
   map?.setConfigProperty('basemap', 'showPointOfInterestLabels', true)
   map?.setConfigProperty('basemap', 'showTransitLabels', true)
   map?.setConfigProperty('basemap', 'showRoadLabels', true)
+
+  map?.flyTo({ center: currentPoint.value, zoom: 14 })
 })
 
 // map?.on('mousemove', (e) => {

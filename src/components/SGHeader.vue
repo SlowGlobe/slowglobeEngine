@@ -37,7 +37,7 @@
   font-family: 'Public Sans', sans-serif;
 
   font-optical-sizing: auto;
-  font-weight: 550;
+  font-weight: 450;
   font-style: normal;
 }
 

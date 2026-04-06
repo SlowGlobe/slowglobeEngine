@@ -1,0 +1,393 @@
+/* ═══════════════════════════════════════════════════════════════
+       DESK LAYOUT FRAMEWORK
+       ───────────────────────────────────────────────────────────────
+       A CSS grid system that presents content as items scattered on
+       a desk: rotated, shadowed, slightly offset from each other.
+ 
+       GRID SYSTEM (12 columns):
+         Items placed in chronological order; pairs share a row.
+         Valid same-row combinations (must total 12):
+           .tl-span-5  + .tl-span-7   → tl-portrait + tl-landscape (asymmetric)
+           .tl-span-7  + .tl-span-5   → tl-landscape + tl-portrait
+           .tl-span-6  + .tl-span-6   → equal pair
+           .tl-span-4  + .tl-span-8   → small + large
+           .tl-span-4  + .tl-span-4  + .tl-span-4  → three equal
+           .tl-span-12             → full-width (own row)
+
+       ITEM TYPES:
+         .tl-desk-photo   → photo print with white border
+         .tl-desk-note    → handwritten note on lined paper
+
+       ATTACHMENTS (optional modifier on .tl-desk-item):
+         .tl-pinned       → red pushpin at top
+         .tl-taped        → transparent tape strip at top
+ 
+       PHOTO ASPECT RATIOS (modifier on .photo-img inside .tl-desk-photo):
+         .tl-portrait     → 3/4
+         .tl-landscape    → 16/9
+         .tl-square       → 1/1
+         .tl-pano         → 21/9
+ 
+       USAGE (Vue pseudocode):
+         <div class="tl-desk">
+           <div class="tl-desk-item tl-span-7 tl-taped">
+             <div class="tl-desk-photo">
+               <div class="tl-photo-img tl-landscape">
+                 <img :src="item.src" :alt="item.alt">
+               </div>
+               <p class="tl-photo-caption">{{ item.caption }}</p>
+             </div>
+           </div>
+           <div class="tl-desk-item tl-span-5 tl-pinned">
+             <div class="tl-desk-note">
+               <p class="tl-note-date">{{ item.date }}</p>
+               <p class="tl-note-text">{{ item.body }}</p>
+             </div>
+           </div>
+         </div>
+    ═══════════════════════════════════════════════════════════════ */
+
+/* *,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+} */
+
+/* ── Design tokens ─────────────────────────────────────────────── */
+:root {
+  /* --desk-bg: #c3ae94;
+  --desk-bg-grain-1: rgba(160, 120, 70, 0.08);
+  --desk-bg-grain-2: rgba(100, 70, 30, 0.05); */
+  --desk-gap: 2.2rem;
+  --desk-padding: 3rem 5rem 5rem;
+
+  --photo-border: 10px;
+  --photo-foot: 20px;
+  --photo-bg: #fafaf6;
+
+  --note-bg: #fffef7;
+  --note-line: #d4e4f4;
+  --note-margin: rgba(200, 80, 80, 0.28);
+  --note-ink: #1e1a16;
+  --note-ink-muted: #a06060;
+
+  --shadow-resting:
+    2px 3px 6px rgba(0, 0, 0, 0.12), 4px 8px 24px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-lifted:
+    4px 10px 18px rgba(0, 0, 0, 0.18), 8px 20px 48px rgba(0, 0, 0, 0.26),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Desk container ────────────────────────────────────────────── */
+.tl-desk {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--desk-gap);
+  align-items: center; /* row items vertically centred; translateY nudges from there */
+  padding: var(--desk-padding);
+  /* max-width: 1320px; */
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  background-color: transparent !important;
+  /* width: 90vw;
+  margin-left: calc(50% - 45vw); */
+  /* Set width to either 90% of viewport or the max cap */
+  width: min(1320px, 80vw);
+
+  /* Calculate margin-left to be: 
+     50% (parent center) minus half of the actual width */
+  margin-left: calc(50% - min(660px, 40vw));
+
+  /* Remove the separate max-width as it's now handled by min() */
+  max-width: none;
+}
+
+/* ── Column spans ──────────────────────────────────────────────── */
+/* --col-pct is used by the solo last-item centering rule below */
+.tl-span-4 {
+  grid-column: span 4;
+  --col-pct: 33.5%;
+}
+.tl-span-5 {
+  grid-column: span 5;
+  --col-pct: 41.8%;
+}
+.tl-span-6 {
+  grid-column: span 6;
+  --col-pct: 50%;
+}
+.tl-span-7 {
+  grid-column: span 7;
+  --col-pct: 58.2%;
+}
+.tl-span-8 {
+  grid-column: span 8;
+  --col-pct: 66.5%;
+}
+.tl-span-9 {
+  grid-column: span 9;
+  --col-pct: 75%;
+}
+.tl-span-12 {
+  grid-column: span 12;
+  --col-pct: 100%;
+}
+
+/* ── Desk item base ────────────────────────────────────────────── */
+.tl-desk-item {
+  position: relative;
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
+    z-index 0s 0.32s;
+  will-change: transform;
+  margin: 0;
+}
+
+/* ── Natural rotation + small ± nudge (prime=7, centred around 0) ── */
+.tl-desk-item:nth-child(7n + 1) {
+  transform: rotate(-1.9deg) translateY(-5px);
+}
+.tl-desk-item:nth-child(7n + 2) {
+  transform: rotate(1.4deg) translateY(7px);
+}
+.tl-desk-item:nth-child(7n + 3) {
+  transform: rotate(-2.5deg) translateY(-3px);
+}
+.tl-desk-item:nth-child(7n + 4) {
+  transform: rotate(0.8deg) translateY(6px);
+}
+.tl-desk-item:nth-child(7n + 5) {
+  transform: rotate(-1.2deg) translateY(-7px);
+}
+.tl-desk-item:nth-child(7n + 6) {
+  transform: rotate(2.2deg) translateY(4px);
+}
+.tl-desk-item:nth-child(7n + 0) {
+  transform: rotate(-0.6deg) translateY(-4px);
+}
+
+/* ── Solo last item: centred horizontally when count is odd ───────
+       Uses :nth-child(odd) as a heuristic — works reliably when items
+       are arranged in span-pairs summing to 12. If you mix tl-span-12
+       full-row items, verify the count parity still holds, or add a
+       .solo class manually as an override.
+    ────────────────────────────────────────────────────────────────── */
+.tl-desk-item:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: var(--col-pct, 50%);
+}
+
+/* ── Hover: item lifts off the desk ───────────────────────────── */
+.tl-desk-item:hover {
+  transform: rotate(0deg) translateY(-8px) scale(1) !important;
+  z-index: 100;
+  transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.tl-desk-item:hover .tl-desk-photo,
+.tl-desk-item:hover .tl-desk-note {
+  box-shadow: var(--shadow-lifted);
+}
+
+.tl-desk-item.tl-pinned,
+.tl-desk-item.tl-taped {
+  transform-origin: 50% 0%;
+}
+
+/* ── Attachment: pushpin ───────────────────────────────────────── */
+.tl-desk-item.tl-pinned::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 33%, #f0a070 0%, #c85030 45%, #7a2010 100%);
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+/* ── Attachment: tape ──────────────────────────────────────────── */
+.tl-desk-item.tl-taped::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.8deg);
+  width: 68px;
+  height: 22px;
+  background: rgba(255, 245, 180, 0.745);
+  background-color: rgba(165, 61, 61, 0.678);
+  border: 1px solid rgba(215, 195, 110, 0.35);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.06);
+  z-index: 2;
+}
+
+/* ── Photo card ────────────────────────────────────────────────── */
+.tl-desk-photo {
+  background: var(--photo-bg);
+  padding: var(--photo-border) var(--photo-border) var(--photo-foot);
+  box-shadow: var(--shadow-resting);
+  transition: box-shadow 0.3s ease;
+}
+
+.tl-photo-img {
+  overflow: hidden;
+  display: block;
+}
+.tl-photo-img.tl-portrait {
+  aspect-ratio: 3/4;
+}
+.tl-photo-img.tl-landscape {
+  aspect-ratio: 16/9;
+}
+.tl-photo-img.tl-square {
+  aspect-ratio: 1/1;
+}
+.tl-photo-img.tl-pano {
+  aspect-ratio: 21/9;
+}
+
+.tl-photo-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tl-photo-caption {
+  font-family: 'Caveat', cursive;
+  /* font-family: 'Reenie Beanie', 'Courier New', Courier, monospace; */
+  /* font-family: 'Courier New', Courier, monospace; */
+  font-size: 1.2rem;
+  color: #8a7560;
+  color: var(--text-heading-color);
+  margin: 0;
+
+  text-align: center;
+  padding-top: 7px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Note card ─────────────────────────────────────────────────── */
+.tl-desk-note {
+  background: var(--note-bg);
+  box-shadow: var(--shadow-resting);
+  transition: box-shadow 0.3s ease;
+  padding: 1.6rem 1.5rem 1.8rem 1.9rem;
+  margin: 0;
+  border-left: 3px solid var(--note-margin);
+  /* Lined paper — 30px line height */
+  background-image: linear-gradient(
+    var(--note-bg) 0px,
+    var(--note-bg) calc(1.5rem - 1px),
+    var(--note-line) calc(1.5rem - 1px),
+    var(--note-line) 1.5rem,
+    var(--note-bg) 1.5rem
+  );
+  background-size: 100% 1.5rem;
+}
+
+.tl-note-date {
+  font-family: 'Caveat', cursive;
+  font-size: 0.9rem;
+  color: var(--note-ink-muted);
+  line-height: 1.5rem;
+  margin-bottom: 0;
+  margin: 0;
+}
+
+.tl-note-text {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+  color: var(--note-ink);
+  margin: 0;
+}
+
+.tl-note-text em {
+  font-style: italic;
+  color: #7a3a22;
+}
+
+/* ── Spacer (map window) ───────────────────────────────────────── */
+/* An empty, transparent slot that lets the map layer beneath show
+       through. Behaves identically to other desk items (rotation, hover
+       lift, pin/tape attachments) but has no surface of its own.
+       The min-height keeps it from collapsing when empty.
+ 
+       USAGE:
+         <div class="tl-desk-item tl-span-6 tl-desk-spacer"></div>
+         <div class="tl-desk-item tl-span-6 tl-desk-spacer tl-pinned"></div>      */
+.tl-desk-spacer {
+  min-height: 18rem;
+  background: transparent;
+
+  /* Subtle dashed border so the space is legible in dev */
+  /* outline: 2px dashed rgba(80, 55, 25, 0.18); */
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .desk {
+    grid-template-columns: repeat(6, 1fr);
+    padding: 2rem;
+  }
+  .tl-span-4,
+  .tl-span-5,
+  .tl-span-6,
+  .tl-span-7,
+  .tl-span-8,
+  .tl-span-9 {
+    grid-column: span 6;
+  }
+  .tl-span-12 {
+    grid-column: span 6;
+  }
+
+  /* Solo last-item: reset override so the 6-col grid takes over cleanly */
+  .tl-desk-item:last-child:nth-child(odd) {
+    grid-column: span 6;
+    justify-self: stretch;
+    width: auto;
+  }
+
+  /* Constrain the desk-item width so tall images never exceed 65vh.
+         The image keeps its natural aspect-ratio; the card just gets
+         narrower and centres in its column. Uses :has() to select the
+         item based on its inner image ratio class.
+           tl-portrait 3/4 → max-width = 65vh × (3/4)
+           tl-square   1/1 → max-width = 65vh × (1/1)                     */
+  .tl-desk-item:has(.tl-photo-img.tl-portrait) {
+    max-width: calc(65vh * 3 / 4);
+    justify-self: center;
+  }
+  .tl-desk-item:has(.tl-photo-img.tl-square) {
+    max-width: 65vh;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .tl-desk {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  [class*='tl-span-'] {
+    grid-column: span 1;
+  }
+  .tl-desk-item:nth-child(n) {
+    transform: rotate(0deg);
+  }
+}

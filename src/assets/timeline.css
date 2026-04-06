@@ -348,10 +348,12 @@
 
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .desk {
+  .tl-desk {
     grid-template-columns: repeat(6, 1fr);
-    padding: 2rem;
+    padding: 1rem !important;
   }
+
+  .tl-span-3,
   .tl-span-4,
   .tl-span-5,
   .tl-span-6,
@@ -365,11 +367,11 @@
   }
 
   /* Solo last-item: reset override so the 6-col grid takes over cleanly */
-  .tl-desk-item:last-child:nth-child(odd) {
+  /* .tl-desk-item:last-child:nth-child(odd) {
     grid-column: span 6;
     justify-self: stretch;
     width: auto;
-  }
+  } */
 
   /* Constrain the desk-item width so tall images never exceed 65vh.
          The image keeps its natural aspect-ratio; the card just gets
@@ -391,6 +393,8 @@
   .tl-desk {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    width: 94vw;
+    margin-left: calc(50% - 47vw);
   }
   [class*='tl-span-'] {
     grid-column: span 1;

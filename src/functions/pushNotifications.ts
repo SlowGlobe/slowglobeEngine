@@ -13,7 +13,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
 
     // Get the server's public key
     // You need to fetch this from your backend
-    const response = await fetch(notificationApiUrl + '/api/vapid-public-key')
+    const response = await fetch(notificationApiUrl + '/api/public/vapid-public-key')
     const vapidPublicKey = await response.text()
 
     const subscription = await registration.pushManager.subscribe({
@@ -27,7 +27,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
     localStorage.setItem('subscriptionId', id)
 
     // Send the subscription to your server
-    const status = await fetch(notificationApiUrl + '/api/subscribe/' + id, {
+    const status = await fetch(notificationApiUrl + '/api/public/subscribe/' + id, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ export async function testPushNotifications(): Promise<boolean> {
   const id = localStorage.getItem('subscriptionId')
   if (!id) return false
   try {
-    await fetch(notificationApiUrl + '/api/test/' + id, {
+    await fetch(notificationApiUrl + '/api/public/test/' + id, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

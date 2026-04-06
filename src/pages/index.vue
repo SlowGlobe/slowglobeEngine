@@ -56,17 +56,12 @@ const intMarg = computed(() => {
   }
   return '-45% 0px -45% 0px'
 })
-
-function showNotification() {
-  window.alert('This is a notification!')
-}
 </script>
 
 <template>
   <!-- When scroll animation has better browser support, look at this https://scroll-driven-animations.style/demos/stacking-cards/css/ -->
   <!-- Can also look at scrollsnapchange event when that has better support instead of intersection observers on every card -->
   <SubscriptionBox />
-  <!-- <iconify-icon icon="mdi:bell" class="notifBell" inline @click="showNotification"></iconify-icon> -->
   <div class="polaroidGrid">
     <div
       class="mapSpacer"

@@ -1,10 +1,22 @@
 <template>
   <div class="readout">
-    Hello
-
-    <br />
-    currentPoint: {{ currentPoint }} <br />
-    <input type="text" v-model="geoPoint" />
+    <label>
+      Name (optional)
+      <input type="text" v-model="name" />
+    </label>
+    <label>
+      Icon (optional)
+      <select v-model="icon">
+        <option value="">None</option>
+        <option v-for="iconName in iconNames" :key="iconName" :value="iconName">
+          {{ iconName }}
+        </option>
+      </select>
+    </label>
+    <label>
+      GeoJSON feature
+      <input type="text" :value="geoPoint" readonly />
+    </label>
     <button @click="copy()">Copy Point</button>
 
     <br />
@@ -24,13 +36,20 @@ const currentPoint: Ref<[number, number]> = useLocalStorage('lastPointSelected',
   number,
   number
 ])
+const iconNames = ['campsite', 'circle', 'diamond', 'mountain', 'picnic', 'plane', 'flag', 'target']
+const icon = useLocalStorage('pointSelectIcon', 'circle')
+const name = useLocalStorage('pointSelectName', '')
 
 const { setMapInteractive } = useMapInteractive()
 
 setMapInteractive(true)
 
 const geoPoint = computed(() => {
-  return JSON.stringify(point(currentPoint.value))
+  const properties: { icon?: string; name?: string } = {}
+  if (icon.value) properties.icon = icon.value
+  const trimmedName = name.value.trim()
+  if (trimmedName) properties.name = trimmedName
+  return JSON.stringify(point(currentPoint.value, properties))
 })
 
 const hlShow = computed({
@@ -47,7 +66,7 @@ onMounted(() => {
   const map = getMap()
   map?.on('click', (e) => {
     currentPoint.value = e.lngLat.wrap().toArray()
-    copy(currentPoint.value.toString())
+    copy(geoPoint.value)
   })
   map?.setConfigProperty('basemap', 'showLabels', true)
   map?.setConfigProperty('basemap', 'showPlaceLabels', true)
@@ -72,5 +91,17 @@ const { copy } = useClipboard({ source: geoPoint })
   right: 0;
   z-index: 2;
   background-color: white;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
 }
 </style>

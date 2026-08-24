@@ -157,7 +157,6 @@ const galleryImages = computedAsync(
         thumbnail: thumbnail.src,
         type: 'image' as 'video' | 'image'
       }
-      console.log('imageModule[1]:', imageModule)
 
       if (path.videoModule) {
         const videoModule = await path.videoModule()

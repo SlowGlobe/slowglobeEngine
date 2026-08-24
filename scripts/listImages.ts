@@ -79,8 +79,7 @@ const images = useFilenameOrder
     )
       .sort(
         (left, right) =>
-          (left.dateTaken === undefined ? 1 : 0) -
-            (right.dateTaken === undefined ? 1 : 0) ||
+          (left.dateTaken === undefined ? 1 : 0) - (right.dateTaken === undefined ? 1 : 0) ||
           (left.dateTaken ?? 0) - (right.dateTaken ?? 0) ||
           left.filename.localeCompare(right.filename)
       )

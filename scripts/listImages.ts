@@ -1,10 +1,12 @@
 import { glob } from 'glob'
+import exifr from 'exifr'
 import { readdirSync } from 'fs'
 import { basename } from 'path'
 import promptSync from 'prompt-sync'
 
 // Initialize prompt
 const prompt = promptSync()
+const useFilenameOrder = process.argv.includes('--filename-order')
 
 // Get all trip directories
 const tripDirs = readdirSync('../trips/', { withFileTypes: true })
@@ -57,7 +59,32 @@ const videoFiles = await glob(
 )
 
 // Extract just the filenames and sort
-const images = imageFiles.map((file) => basename(file)).sort()
+const images = useFilenameOrder
+  ? imageFiles.map((file) => basename(file)).sort()
+  : (
+      await Promise.all(
+        imageFiles.map(async (file) => {
+          const metadata = await exifr.parse(file, {
+            pick: ['DateTimeOriginal', 'CreateDate']
+          })
+
+          const dateTaken = metadata?.DateTimeOriginal ?? metadata?.CreateDate
+
+          return {
+            filename: basename(file),
+            dateTaken: dateTaken instanceof Date ? dateTaken.getTime() : undefined
+          }
+        })
+      )
+    )
+      .sort(
+        (left, right) =>
+          (left.dateTaken === undefined ? 1 : 0) -
+            (right.dateTaken === undefined ? 1 : 0) ||
+          (left.dateTaken ?? 0) - (right.dateTaken ?? 0) ||
+          left.filename.localeCompare(right.filename)
+      )
+      .map(({ filename }) => filename)
 
 const videos = videoFiles.map((file) => basename(file)).sort()
 

@@ -4,6 +4,7 @@ import { vIntersectionObserver } from '@vueuse/components'
 import { computed, onBeforeMount, onUnmounted } from 'vue'
 import PolaroidPicture from '@/components/PolaroidPicture.vue'
 import {
+  resetLights,
   setMapSpin,
   setWeather,
   showGlobe,
@@ -29,6 +30,7 @@ onBeforeMount(() => {
   setMapSpin(true)
   showOverviews(true)
   setWeather(null)
+  resetLights()
 })
 
 onUnmounted(() => {

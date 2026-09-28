@@ -1,7 +1,7 @@
 import { allTrips } from '~/allTrips'
 import { featureCollection, point } from '@turf/turf'
 import { getMap } from './map'
-import type { StyleImageInterface } from 'mapbox-gl'
+import type { LightsSpecification, StyleImageInterface } from 'mapbox-gl'
 
 export async function addLayersAndSources() {
   const map = getMap()
@@ -400,6 +400,132 @@ class pulsingDot implements StyleImageInterface {
     return true
   }
 }
+
+// The Standard style's own lightPreset-driven default lights (captured via
+// map.getLights() before any custom override) — map.setLights(null) does
+// NOT restore this, it falls back to a flatter/harsher default instead.
+export const DEFAULT_LIGHTS: LightsSpecification[] = [
+  {
+    type: 'directional',
+    properties: {
+      intensity: [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        12,
+        [
+          'match',
+          ['config', 'lightPreset'],
+          'dawn',
+          0.5,
+          'day',
+          ['match', ['config', 'theme'], 'monochrome', 0.3, 0.2],
+          'dusk',
+          0,
+          'night',
+          ['match', ['config', 'theme'], 'monochrome', 0.01, 0],
+          0.2
+        ],
+        13,
+        [
+          'match',
+          ['config', 'lightPreset'],
+          'night',
+          ['match', ['config', 'theme'], 'monochrome', 0.01, 0],
+          0.2
+        ],
+        14,
+        [
+          'match',
+          ['config', 'lightPreset'],
+          'dawn',
+          ['match', ['config', 'theme'], 'monochrome', 0.35, 0.5],
+          'day',
+          0.2,
+          'dusk',
+          ['match', ['config', 'theme'], 'monochrome', 0.15, 0.2],
+          'night',
+          ['match', ['config', 'theme'], 'monochrome', 0.25, 0.5],
+          0.2
+        ]
+      ],
+      color: [
+        'match',
+        ['config', 'lightPreset'],
+        'dawn',
+        'hsl(33, 98%, 77%)',
+        'day',
+        'hsl(0, 0%, 100%)',
+        'dusk',
+        ['match', ['config', 'theme'], 'monochrome', 'hsl(30, 0%, 50%)', 'hsl(30, 98%, 76%)'],
+        'night',
+        ['match', ['config', 'theme'], 'monochrome', 'hsl(0, 0%, 0%)', 'hsl(225, 15%, 29%)'],
+        'hsl(0, 0%, 100%)'
+      ],
+      'shadow-quality': 0.5,
+      'shadow-intensity': ['match', ['config', 'lightPreset'], 'night', 0.5, 'dusk', 0.85, 1],
+      direction: [
+        'match',
+        ['config', 'lightPreset'],
+        'dawn',
+        [
+          'match',
+          ['config', 'theme'],
+          'monochrome',
+          ['literal', [120, 40]],
+          ['literal', [120, 50]]
+        ],
+        'day',
+        ['literal', [180, 20]],
+        'dusk',
+        [
+          'match',
+          ['config', 'theme'],
+          'monochrome',
+          ['literal', [240, 30]],
+          ['literal', [240, 80]]
+        ],
+        'night',
+        ['literal', [270, 20]],
+        ['literal', [180, 20]]
+      ],
+      'cast-shadows': true
+    },
+    id: 'directional'
+  },
+  {
+    type: 'ambient',
+    properties: {
+      color: [
+        'match',
+        ['config', 'lightPreset'],
+        'dawn',
+        'hsl(28, 98%, 93%)',
+        'day',
+        'hsl(0, 0%, 100%)',
+        'dusk',
+        'hsl(228, 27%, 29%)',
+        'night',
+        ['match', ['config', 'theme'], 'monochrome', 'hsl(217, 100%, 0%)', 'hsl(217, 100%, 11%)'],
+        'hsl(0, 0%, 100%)'
+      ],
+      intensity: [
+        'match',
+        ['config', 'lightPreset'],
+        'dawn',
+        0.75,
+        'day',
+        ['match', ['config', 'theme'], 'monochrome', 0.85, 0.8],
+        'dusk',
+        ['match', ['config', 'theme'], 'monochrome', 0.1, 0.8],
+        'night',
+        ['match', ['config', 'theme'], 'monochrome', 0, 0.5],
+        0.8
+      ]
+    },
+    id: 'ambient'
+  }
+]
 
 //export function showExtraTripDetail(val: boolean) {
 //   if (!map) return

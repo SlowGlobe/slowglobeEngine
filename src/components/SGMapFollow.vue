@@ -31,12 +31,13 @@ import {
   useHikingLayers,
   fitBounds,
   getMap,
+  resetLights,
   useMapInteractive,
   type MapOverlays,
   type WeatherOptions,
   setWeather
 } from '@/functions/map'
-import type { Feature, LineString } from 'geojson'
+import type { Feature, LineString, Position } from 'geojson'
 import { bbox, featureCollection, point } from '@turf/turf'
 import { vIntersectionObserver } from '@vueuse/components'
 import { useElementBounding, useIntersectionObserver, useWindowSize } from '@vueuse/core'
@@ -48,6 +49,7 @@ import {
   getPercGeom,
   llLikeToObject
 } from '@/functions/geometryHelpers'
+import { getSunDirection } from '@/functions/timezoneHelpers'
 const { setMapInteractive, mapInteractive } = useMapInteractive()
 const { showHikingLayers } = useHikingLayers()
 
@@ -65,6 +67,7 @@ const props = defineProps<{
   satellite?: MapOverlays
   noPreScroll?: boolean
   weather?: WeatherOptions
+  dynamicLighting?: boolean
 }>()
 
 const fPitch = props.followPitch ?? 60
@@ -137,6 +140,7 @@ function generateFrame(time: number) {
     useTime: props.useTime,
     showTime: props.showTime,
     showDistance: props.showDistance,
+    dynamicLighting: props.dynamicLighting,
     follow: { shouldFollow: props.follow, followCameraLine, followCameraLineLength }
   })
   if (results.progressTime) currentTime.value = results.progressTime
@@ -170,85 +174,67 @@ function generateFrame(time: number) {
     )
   }
 
-  setLighting()
+  if (props.dynamicLighting && results.progressDateTime && results.progressPosition) {
+    setLighting(results.progressDateTime, results.progressPosition)
+  }
   requestAnimationFrame(generateFrame)
 }
 
-function setLighting() {
-  return
-  // const map = getMap()
-  // if (!map) return
-  // if (props.follow && props.useTime) {
-  //   const currentLight = map.getLights() as DirectionalLightSpecification[]
-  //   console.log('currentLight:', currentLight)
-  //   // if (!currentLight || !currentLight[0]) return
-  //   // let startColour = { h: 0, s: 0, l: 100 }
-  //   let startColour = { h: 33, s: 98, l: 77 }
-  //   // let endColour = { h: 33, s: 98, l: 77 }
-  //   let endColour = { h: 0, s: 0, l: 29 }
-  //   //smoothly transition between the colours based on percentShown
-  //   let colour = {
-  //     h: (endColour.h - startColour.h) * percentShown + startColour.h,
-  //     s: (endColour.s - startColour.s) * percentShown + startColour.s,
-  //     l: (endColour.l - startColour.l) * percentShown + startColour.l
-  //   }
+interface Hsl {
+  h: number
+  s: number
+  l: number
+}
+function lerpHsl(a: Hsl, b: Hsl, t: number): Hsl {
+  return { h: a.h + (b.h - a.h) * t, s: a.s + (b.s - a.s) * t, l: a.l + (b.l - a.l) * t }
+}
 
-  //   console.log(
-  //     '`hsl(${colour.h}, ${colour.s}%, ${colour.l}%)`:',
-  //     `hsl(${colour.h}, ${colour.s}%, ${colour.l}%)`
-  //   )
-  //   map.setLights([
-  //     {
-  //       id: 'sun_light',
-  //       type: 'directional',
-  //       properties: {
-  //         color: `hsl(${colour.h}, ${colour.s}%, ${colour.l}%)`,
-  //         // color: 'rgba(255.0, 0.0, 0.0, 1.0)',
-  //         intensity: 0.9,
-  //         direction: [120, 40.0],
-  //         'cast-shadows': true,
-  //         'shadow-intensity': 1
-  //       }
-  //     },
-  //     {
-  //       id: 'ambient_l',
-  //       type: 'ambient',
-  //       properties: {
-  //         color: `hsl(${colour.h}, ${colour.s}%, ${colour.l}%)`,
-  //         // color: 'rgba(255.0, 0.0, 0.0, 1.0)',
-  //         intensity: 0.1
-  //       }
-  //     }
-  //   ])
+// Dark blue at night, warm gold near the horizon (sunrise/sunset), fading
+// to a bright, near-neutral white as the sun climbs higher. Approximate,
+// not physically exact.
+const NIGHT_COLOUR: Hsl = { h: 0, s: 0, l: 20 }
+const GOLDEN_COLOUR: Hsl = { h: 30, s: 80, l: 68 }
+const DAY_COLOUR: Hsl = { h: 45, s: 20, l: 97 }
 
-  //   const arr = [
-  //     'match',
-  //     ['config', 'lightPreset'],
-  //     'dawn',
-  //     'hsl(33, 98%, 77%)',
-  //     'day',
-  //     'hsl(0, 0%, 100%)',
-  //     'dusk',
-  //     'hsl(30, 98%, 76%)',
-  //     'night',
-  //     'hsl(0, 0%, 29%)'
-  //   ]
+function colourForAltitude(altitude: number): Hsl {
+  if (altitude <= -6) return NIGHT_COLOUR
+  if (altitude <= 6) return lerpHsl(NIGHT_COLOUR, GOLDEN_COLOUR, (altitude + 6) / 12)
+  if (altitude <= 40) return lerpHsl(GOLDEN_COLOUR, DAY_COLOUR, (altitude - 6) / 34)
+  return DAY_COLOUR
+}
 
-  // currentLight[0].properties.direction = [360 * percentShown, 40]
+function setLighting(date: Date, position: Position) {
+  const map = getMap()
+  if (!map) return
+  const [azimuthal, polar] = getSunDirection(date, position)
+  const altitude = 90 - polar
+  // 0 at/below -6° (end of civil twilight), 1 by 40° altitude
+  const dayness = Math.min(1, Math.max(0, (altitude + 6) / 46))
 
-  // const light: DirectionalLightSpecification = {
-  //   type: 'directional',
-  //   properties: {
-  //     direction: [360 * percentShown, 40],
-  //     color: 'hsl(33, 98%, 77%)',
-  //     intensity: 1,
-  //     'cast-shadows': true
-  //   },
-  //   id: 'danlight'
-  // }
+  const colour = colourForAltitude(altitude)
+  const color = `hsl(${colour.h}, ${colour.s}%, ${colour.l}%)`
 
-  // map.setLights([light])
-  // }
+  map.setLights([
+    {
+      id: 'sun_light',
+      type: 'directional',
+      properties: {
+        direction: [azimuthal, polar],
+        color,
+        intensity: 0.2 + 0.7 * dayness,
+        'cast-shadows': true,
+        'shadow-intensity': dayness
+      }
+    },
+    {
+      id: 'ambient_l',
+      type: 'ambient',
+      properties: {
+        color,
+        intensity: 0.05 + 0.1 * dayness
+      }
+    }
+  ])
 }
 
 function getProgress(perc: number, end?: number, start?: number) {
@@ -387,6 +373,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
       })
     }
     setWeather(props.weather ?? null)
+    if (!props.dynamicLighting) resetLights()
 
     shouldAnimate.value = true
     requestAnimationFrame(generateFrame)

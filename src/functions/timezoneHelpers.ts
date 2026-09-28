@@ -1,7 +1,8 @@
 import tzlookup from 'tz-lookup'
-import { toZonedTime } from 'date-fns-tz'
+import { toZonedTime, fromZonedTime } from 'date-fns-tz'
 import { format, parseISO } from 'date-fns'
-import type { Feature, FeatureCollection, Geometry } from 'geojson'
+import { getPosition } from 'suncalc'
+import type { Feature, FeatureCollection, Geometry, Position } from 'geojson'
 
 const UTC_ISO_PATTERN = /(Z|[+-]\d{2}:?\d{2})$/
 
@@ -27,6 +28,18 @@ export function convertTimesToLocal(times: unknown, lon: number, lat: number): u
   if (Array.isArray(times)) return times.map((t) => convertTimesToLocal(t, lon, lat))
   if (isRawUtcIso(times)) return toFloatingLocalTime(times, lon, lat)
   return times
+}
+
+// Approximates the sun's position for a floating-local-time Date (see
+// toFloatingLocalTime) at the given coordinate, in Mapbox's directional-light
+// direction convention: [azimuthal, polar] in degrees, azimuthal measured
+// from north (clockwise), polar from 0 (zenith) to 180 (nadir).
+export function getSunDirection(floatingLocalDate: Date, position: Position): [number, number] {
+  const [lon, lat] = position as [number, number]
+  const tz = tzlookup(lat, lon)
+  const utcDate = fromZonedTime(floatingLocalDate, tz)
+  const { azimuth, altitude } = getPosition(utcDate, lat, lon)
+  return [azimuth, 90 - altitude]
 }
 
 // Finds the first [lon, lat, ...] position nested inside a geometry's

@@ -82,6 +82,7 @@
 
 <script setup lang="ts">
 import {
+  resetLights,
   setMapSpin,
   setWeather,
   showArticleStart,
@@ -115,6 +116,7 @@ onMounted(() => {
   showOverviews(false)
   showTracks(tripId?.value ?? '')
   setWeather(props.weather ?? null)
+  resetLights()
 })
 const router = useRouter()
 
@@ -129,6 +131,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
       showTracks(tripId?.value ?? '', props.reveal)
     }
     setWeather(props.weather ?? null)
+    resetLights()
   }
 }
 

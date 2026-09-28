@@ -16,6 +16,7 @@
 import {
   fitBounds,
   getMap,
+  resetLights,
   setWeather,
   showTracks,
   useHikingLayers,
@@ -94,6 +95,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
       showTracks(tripId?.value ?? '', props.reveal)
     }
     setWeather(props.weather ?? null)
+    resetLights()
   }
 }
 </script>

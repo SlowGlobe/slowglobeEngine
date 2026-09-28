@@ -9,7 +9,7 @@ import mapboxgl, {
   type RasterLayerSpecification
 } from 'mapbox-gl'
 import { onMounted, onUnmounted, readonly, ref } from 'vue'
-import { addLayersAndSources } from './mapLayers'
+import { addLayersAndSources, DEFAULT_LIGHTS } from './mapLayers'
 
 let map: null | mapboxgl.Map = null
 const mapShouldSpin = ref(false)
@@ -340,4 +340,10 @@ export function setWeather(weather: WeatherOptions) {
       'center-thinning': 0 // Rain to be displayed on the whole screen area
     })
   }
+}
+
+// Clears any custom lights (e.g. SGMapFollow's dynamic sun lighting),
+// restoring the Standard style's own lightPreset-driven default lighting.
+export function resetLights() {
+  map?.setLights(DEFAULT_LIGHTS)
 }

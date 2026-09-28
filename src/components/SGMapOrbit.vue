@@ -19,6 +19,7 @@ import {
   useMapInteractive,
   type MapOverlays,
   type WeatherOptions,
+  resetLights,
   setWeather
 } from '@/functions/map'
 import { featureCollection, point } from '@turf/turf'
@@ -138,6 +139,7 @@ function onIntersectionObserver([entry]: IntersectionObserverEntry[]) {
     showHikingLayers(props.satellite ?? false)
     showLocation(true)
     setWeather(props.weather ?? null)
+    resetLights()
   } else {
     showLocation(false)
     shouldAnimate.value = false

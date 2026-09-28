@@ -50,6 +50,7 @@ function getForwardBearing(
 
 interface PercGeom {
   progressTime?: string
+  progressDateTime?: Date
   progressPosition?: Position
   progressBearing?: number
   progressLine: Feature<LineString>
@@ -65,6 +66,7 @@ export function getPercGeom(
     useTime?: boolean
     showTime?: boolean
     showDistance?: boolean
+    dynamicLighting?: boolean
     follow?: {
       shouldFollow: boolean
       followCameraLine?: Feature<LineString>
@@ -74,6 +76,7 @@ export function getPercGeom(
     useTime: false,
     showTime: false,
     showDistance: false,
+    dynamicLighting: false,
     follow: {
       shouldFollow: false,
       followCameraLine: undefined,
@@ -85,7 +88,7 @@ export function getPercGeom(
   const fullGeometryDistance = length(geom)
   let progress = perc
   if (
-    (options.useTime || options.showTime) &&
+    (options.useTime || options.showTime || options.dynamicLighting) &&
     geom?.properties?.coordinateProperties?.times &&
     Array.isArray(geom?.properties?.coordinateProperties?.times)
   ) {
@@ -99,6 +102,7 @@ export function getPercGeom(
     // location, so formatting with local (non-UTC) getters reproduces the
     // stored wall-clock time regardless of the viewer's own timezone.
     result.progressTime = format(progressDate, 'HH:mm')
+    result.progressDateTime = progressDate
 
     if (options.useTime) {
       const coordIndexAtTime = findClosestFrame(timeArray, progressDate)

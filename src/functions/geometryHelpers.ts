@@ -44,6 +44,7 @@ interface PercGeom {
   progressPosition?: Position
   progressBearing?: number
   progressLine: Feature<LineString>
+  progressDistance?: number
   camPos?: Position
   camBearing?: number
 }
@@ -54,6 +55,7 @@ export function getPercGeom(
   options: {
     useTime?: boolean
     showTime?: boolean
+    showDistance?: boolean
     follow?: {
       shouldFollow: boolean
       followCameraLine?: Feature<LineString>
@@ -62,6 +64,7 @@ export function getPercGeom(
   } = {
     useTime: false,
     showTime: false,
+    showDistance: false,
     follow: {
       shouldFollow: false,
       followCameraLine: undefined,
@@ -97,6 +100,10 @@ export function getPercGeom(
       const progressLineLength = length(progressLine)
       progress = progressLineLength / fullGeometryDistance
     }
+  }
+  if (options.showDistance) {
+    const distanceTravelled = fullGeometryDistance * perc
+    result.progressDistance = distanceTravelled
   }
   const pos = getForwardBearing(geom, fullGeometryDistance, progress)
   Object.assign(result, {

@@ -12,8 +12,15 @@
       v-intersection-observer="[onTopBoundsFrame, { rootMargin: '-45% 0px -45% 0px' }]"
     ></div>
     <div class="mapCutout" v-intersection-observer="onIntersectionObserver" ref="el"></div>
-    <div v-if="currentTime != ''" class="timeBox">
-      <iconify-icon icon="mdi:clock" inline></iconify-icon> {{ currentTime }}
+    <div v-if="currentTime != '' || currentDistance != 0" class="timeBox">
+      <template v-if="currentTime != ''">
+        <iconify-icon icon="mdi:clock" inline></iconify-icon> {{ currentTime }}
+      </template>
+      <template v-if="currentTime != '' && currentDistance != 0"> &nbsp;&nbsp;</template>
+      <template v-if="currentDistance != 0">
+        <iconify-icon icon="ic:round-route" inline></iconify-icon>
+        {{ currentDistance.toFixed(2) }}km
+      </template>
     </div>
   </div>
   <div class="endSeg"></div>
@@ -46,6 +53,7 @@ const props = defineProps<{
   overviewPitch?: number
   useTime?: boolean
   showTime?: boolean
+  showDistance?: boolean
   followPitch?: number
   followZoom?: number
   lockBearing?: number
@@ -61,6 +69,7 @@ let fullGeometry: Feature<LineString>
 let percentShown = 0
 const shouldAnimate = ref(false)
 const currentTime = ref('')
+const currentDistance = ref(0)
 let followCameraLine: Feature<LineString>
 let followCameraLineLength = 0
 let cameraPos = { lat: 0, lng: 0 }
@@ -122,9 +131,11 @@ function generateFrame(time: number) {
   const results = getPercGeom(fullGeometry, perc, {
     useTime: props.useTime,
     showTime: props.showTime,
+    showDistance: props.showDistance,
     follow: { shouldFollow: props.follow, followCameraLine, followCameraLineLength }
   })
   if (results.progressTime) currentTime.value = results.progressTime
+  if (results.progressDistance) currentDistance.value = results.progressDistance
   if (results.camPos) cameraPos = { lat: results.camPos[1]!, lng: results.camPos[0]! }
   if (results.camBearing) camBearing = results.camBearing
   if (typeof props.lockBearing === 'number') camBearing = props.lockBearing

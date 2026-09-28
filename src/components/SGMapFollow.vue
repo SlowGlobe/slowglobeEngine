@@ -37,12 +37,17 @@ import {
   setWeather
 } from '@/functions/map'
 import type { Feature, LineString } from 'geojson'
-import { bbox, bezierSpline, featureCollection, length, point, simplify } from '@turf/turf'
+import { bbox, featureCollection, point } from '@turf/turf'
 import { vIntersectionObserver } from '@vueuse/components'
 import { useElementBounding, useIntersectionObserver, useWindowSize } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { type CameraOptions, type GeoJSONSource } from 'mapbox-gl'
-import { getCameraForCameraOptions, getPercGeom, llLikeToObject } from '@/functions/geometryHelpers'
+import {
+  getCameraForCameraOptions,
+  getFollowCameraLine,
+  getPercGeom,
+  llLikeToObject
+} from '@/functions/geometryHelpers'
 const { setMapInteractive, mapInteractive } = useMapInteractive()
 const { showHikingLayers } = useHikingLayers()
 
@@ -413,35 +418,36 @@ function showLocationArrow(visible: boolean) {
   }
 }
 
+const debugCameraLine = false
+
 onMounted(() => {
   if (props.geometry) {
     fullGeometry = props.geometry
     if (props.follow) {
-      followCameraLine = bezierSpline(simplify(fullGeometry, { tolerance: 0.003 }), {
-        resolution: 100000,
-        sharpness: 0.2
-      })
-      followCameraLineLength = length(followCameraLine)
-      // const map = getMap()
-      // if (!map) return
-      // map.setTerrain(null)
-      // if (!map.getSource('fcam' + randomId)) {
-      //   map.addSource('fcam' + randomId, {
-      //     type: 'geojson',
-      //     data: featureCollection([followCameraLine])
-      //   })
-      // }
-      // if (!map.getLayer('fcam' + randomId)) {
-      //   map.addLayer({
-      //     id: 'fcam' + randomId,
-      //     type: 'line',
-      //     source: 'fcam' + randomId,
-      //     paint: {
-      //       'line-color': 'rgb(10, 255, 25)',
-      //       'line-width': 8
-      //     }
-      //   })
-      // }
+      ;({ followCameraLine, followCameraLineLength } = getFollowCameraLine(fullGeometry))
+
+      if (debugCameraLine) {
+        const map = getMap()
+        if (map) {
+          if (!map.getSource('fcam' + randomId)) {
+            map.addSource('fcam' + randomId, {
+              type: 'geojson',
+              data: featureCollection([followCameraLine])
+            })
+          }
+          if (!map.getLayer('fcam' + randomId)) {
+            map.addLayer({
+              id: 'fcam' + randomId,
+              type: 'line',
+              source: 'fcam' + randomId,
+              paint: {
+                'line-color': 'rgb(10, 255, 25)',
+                'line-width': 8
+              }
+            })
+          }
+        }
+      }
     }
   }
 })

@@ -1,4 +1,13 @@
-import { lineSliceAlong, bearing, lineSlice, length } from '@turf/turf'
+import {
+  lineSliceAlong,
+  bearing,
+  lineSlice,
+  length,
+  bbox,
+  bezierSpline,
+  distance,
+  simplify
+} from '@turf/turf'
 import { parseISO, differenceInMinutes, addMinutes, format } from 'date-fns'
 import type { Feature, LineString, Position } from 'geojson'
 import { findClosestFrame } from './timeSearch'
@@ -125,6 +134,45 @@ export function getPercGeom(
     })
   }
   return result
+}
+
+const TOLERANCE_PER_KM_OF_BBOX_DIAGONAL = 0.0009 // degrees per km of bbox diagonal
+const MIN_TOLERANCE = 0.0005 // guards very short/tight loops
+const MAX_TOLERANCE = 0.02 // guards very large footprints
+
+const BASE_SHARPNESS = 0.8
+const SHARPNESS_DENSITY_FACTOR = 0.02
+const MIN_SHARPNESS = 0.15
+const MAX_SHARPNESS = 1
+
+// Fits a smooth bezier camera path over `geom`, scaling the simplify
+// tolerance to the geometry's own bounding-box diagonal so one formula
+// works for both a sweeping multi-day road trip and a tight short hike.
+export function getFollowCameraLine(geom: Feature<LineString>): {
+  followCameraLine: Feature<LineString>
+  followCameraLineLength: number
+} {
+  const box = bbox(geom)
+  const bboxDiagonalKm = distance([box[0], box[1]], [box[2], box[3]])
+  const tolerance = Math.min(
+    MAX_TOLERANCE,
+    Math.max(MIN_TOLERANCE, bboxDiagonalKm * TOLERANCE_PER_KM_OF_BBOX_DIAGONAL)
+  )
+
+  const simplified = simplify(geom, { tolerance })
+
+  // Denser remaining points (tight curves that survived simplification)
+  // get a lower sharpness to avoid bezierSpline loop/overshoot artifacts;
+  // sparser points get a rounder, higher-sharpness curve.
+  const pointsPerKm =
+    bboxDiagonalKm > 0 ? simplified.geometry.coordinates.length / bboxDiagonalKm : 0
+  const sharpness = Math.min(
+    MAX_SHARPNESS,
+    Math.max(MIN_SHARPNESS, BASE_SHARPNESS - pointsPerKm * SHARPNESS_DENSITY_FACTOR)
+  )
+
+  const followCameraLine = bezierSpline(simplified, { resolution: 100000, sharpness })
+  return { followCameraLine, followCameraLineLength: length(followCameraLine) }
 }
 
 function compassBearingToDeg(bearing: number) {

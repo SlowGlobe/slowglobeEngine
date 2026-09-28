@@ -1,6 +1,5 @@
 import { lineSliceAlong, bearing, lineSlice, length } from '@turf/turf'
-import { parseISO, differenceInMinutes, addMinutes } from 'date-fns'
-import { formatInTimeZone } from 'date-fns-tz'
+import { parseISO, differenceInMinutes, addMinutes, format } from 'date-fns'
 import type { Feature, LineString, Position } from 'geojson'
 import { findClosestFrame } from './timeSearch'
 import type { CameraOptions, LngLatLike } from 'mapbox-gl'
@@ -84,7 +83,10 @@ export function getPercGeom(
     const lastDate = parseISO(timeArray[timeArray.length - 1])
     const dateDiff = differenceInMinutes(lastDate, firstDate)
     const progressDate = addMinutes(firstDate, perc * dateDiff)
-    result.progressTime = formatInTimeZone(progressDate, 'Australia/Adelaide', 'HH:mm')
+    // timeArray entries are floating local time (no offset) at the recording
+    // location, so formatting with local (non-UTC) getters reproduces the
+    // stored wall-clock time regardless of the viewer's own timezone.
+    result.progressTime = format(progressDate, 'HH:mm')
 
     if (options.useTime) {
       const coordIndexAtTime = findClosestFrame(timeArray, progressDate)

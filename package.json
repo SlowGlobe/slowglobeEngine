@@ -14,7 +14,8 @@
     "create-trip": "tsx ./scripts/createTrip.ts",
     "encode-video": "tsx ./scripts/encodeVideo.ts",
     "convert-images": "tsx ./scripts/convertImages.ts",
-    "list-images": "tsx ./scripts/listImages.ts"
+    "list-images": "tsx ./scripts/listImages.ts",
+    "migrate-geojson-times": "tsx ./scripts/migrateGeojsonTimes.ts"
   },
   "dependencies": {
     "@tmcw/togeojson": "^5.8.1",
@@ -27,6 +28,7 @@
     "iconify-icon": "^2.3.0",
     "lightgallery": "^2.9.0",
     "mapbox-gl": "^3.17.0",
+    "tz-lookup": "^6.1.25",
     "vite-imagetools": "^9.0.2",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3"
@@ -36,6 +38,7 @@
     "@types/geojson": "^7946.0.16",
     "@types/heic-convert": "^2.1.0",
     "@types/node": "^24.10.2",
+    "@types/tz-lookup": "^6.1.2",
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/tsconfig": "^0.8.1",

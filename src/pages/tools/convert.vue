@@ -23,6 +23,7 @@ import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { gpx, kml } from '@tmcw/togeojson'
 import { useClipboard } from '@vueuse/core'
 import { getMap, useMapInteractive } from '@/functions/map'
+import { localizeFeatureCollectionTimes } from '@/functions/timezoneHelpers'
 import { center, featureCollection } from '@turf/turf'
 import type { GeoJSONSource } from 'mapbox-gl'
 import type { FeatureCollection } from 'geojson'
@@ -81,7 +82,7 @@ const geoJsonVersion = computed(() => {
     } else {
       geojson = gpx(new DOMParser().parseFromString(gpxText.value, 'text/xml'))
     }
-    return geojson
+    return localizeFeatureCollectionTimes(geojson)
   } catch (e) {
     console.warn('gpx parse error', e)
     return ''

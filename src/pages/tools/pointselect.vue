@@ -18,7 +18,8 @@
       <input type="text" :value="geoPoint" readonly />
     </label>
     <button @click="copy()">Copy Point</button>
-
+    <br />
+    {{ currentPoint }}
     <br />
     Show Hiking Layers <input type="checkbox" v-model="hlShow" label="Show Hiking Layers" />
   </div>

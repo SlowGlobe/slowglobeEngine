@@ -406,9 +406,9 @@ onMounted(() => {
   if (props.geometry) {
     fullGeometry = props.geometry
     if (props.follow) {
-      followCameraLine = bezierSpline(simplify(fullGeometry, { tolerance: 0.008 }), {
+      followCameraLine = bezierSpline(simplify(fullGeometry, { tolerance: 0.003 }), {
         resolution: 100000,
-        sharpness: 0.5
+        sharpness: 0.2
       })
       followCameraLineLength = length(followCameraLine)
       // const map = getMap()

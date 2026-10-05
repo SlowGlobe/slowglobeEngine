@@ -8,6 +8,10 @@ precacheAndRoute(self.__WB_MANIFEST)
 
 cleanupOutdatedCaches()
 
+// registerType 'autoUpdate' needs the SW to activate itself when using injectManifest
+self.addEventListener('install', () => self.skipWaiting())
+self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()))
+
 self.addEventListener('push', (event) => {
   if (!event.data) return
   console.log('event info herewow:', event)
